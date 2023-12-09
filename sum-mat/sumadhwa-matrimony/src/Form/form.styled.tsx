@@ -93,10 +93,15 @@ export const StyledForm = styled.form`
     }
   }
 
+  input {
+    color: #000;
+  }
+
   .input-holder {
     display: flex;
     flex-direction: column;
     margin: 10px 0;
+    color: #000
 
     label {
       width: 100%;
