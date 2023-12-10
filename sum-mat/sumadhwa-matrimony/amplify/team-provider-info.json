@@ -1,0 +1,38 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-sumadhwamatrimony-dev-145715-authRole",
+      "UnauthRoleArn": "arn:aws:iam::310688881505:role/amplify-sumadhwamatrimony-dev-145715-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::310688881505:role/amplify-sumadhwamatrimony-dev-145715-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-sumadhwamatrimony-dev-145715-deployment",
+      "UnauthRoleName": "amplify-sumadhwamatrimony-dev-145715-unauthRole",
+      "StackName": "amplify-sumadhwamatrimony-dev-145715",
+      "StackId": "arn:aws:cloudformation:ap-south-1:310688881505:stack/amplify-sumadhwamatrimony-dev-145715/4f7aabb0-973e-11ee-9a9d-0a582594a3ea",
+      "AmplifyAppId": "dy906ucimp0ye"
+    },
+    "categories": {
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "dy906ucimp0ye",
+          "type": "manual"
+        }
+      },
+      "auth": {
+        "sumadhwamatrimony244e624f": {}
+      },
+      "function": {
+        "S3Triggeraeb307fd": {
+          "deploymentBucketName": "amplify-sumadhwamatrimony-dev-145715-deployment",
+          "s3Key": "amplify-builds/S3Triggeraeb307fd-6b346f744541436b3078-build.zip"
+        }
+      },
+      "storage": {
+        "sumadhwamatrimony59261716": {
+          "bucketName": "sumadhwa-matrimony-doc-bucket",
+          "region": "ap-south-1"
+        }
+      }
+    }
+  }
+}
