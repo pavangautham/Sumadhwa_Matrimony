@@ -3,7 +3,7 @@ import { FormSection, StyledForm } from "./form.styled";
 import { Button } from "../Components/button";
 import axios from "axios";
 
-interface FormData {
+export interface IFormData {
   name: string;
   fatherName: string;
   motherName: string;
@@ -27,6 +27,7 @@ interface FormData {
   alternativePhone: string;
   residence: string;
   photo: File | null;
+  photo2: File | null;
   [key: string]: string | File | null;
 }
 
@@ -35,7 +36,7 @@ interface ErrorData {
 }
 
 function Form() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<IFormData>({
     name: "",
     fatherName: "",
     motherName: "",
@@ -59,6 +60,7 @@ function Form() {
     alternativePhone: "",
     residence: "",
     photo: null,
+    photo2: null,
   });
 
   const [error, setError] = useState<ErrorData>({
@@ -69,6 +71,7 @@ function Form() {
 
   const fileRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  // const [preview2, setPreview2] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -109,6 +112,17 @@ function Form() {
     validateFormData();
   };
 
+  // const handleFileChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+
+  //   setPreview2(file ? URL.createObjectURL(file) : null);
+
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     photo2: file ?? null,
+  //   }));
+  // };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -142,7 +156,7 @@ function Form() {
       residence: formData.residence,
       siblings: formData.siblings,
       contactNumber: formData.contactNumber,
-      photo: formData.photo
+      photo: formData.photo,
     };
 
     try {
@@ -181,6 +195,7 @@ function Form() {
         alternativePhone: "",
         residence: "",
         photo: null,
+        photo2: null,
       });
 
       // Clear the file input
@@ -204,349 +219,368 @@ function Form() {
 
   return (
     <FormSection>
-        <h1 className="mb-4" style={{ textAlign: "center" }}>
-          <img
-            className="logo-left"
-            src="./src/assets/hand-in-hand.png"
-            alt=""
-          />
-          Sumadhwa Matrimony
-          <img
-            className="logo-right"
-            src="./src/assets/hand-in-hand.png"
-            alt=""
-          />
-        </h1>
-        <StyledForm action="" onSubmit={handleSubmit}>
-          <h1 className="mt-2 mb-3">Tell us about yourself</h1>
-          <div className="two col-lg-12 col-11">
-            <div className="input-holder col-lg-6">
-              <label id="name-label" htmlFor="name">
-                Name<sup>*</sup>
-                {error.name && (
-                  <span className="name-error error-message">
-                    {formData.name === "" ? "Required" : ""}
-                  </span>
-                )}
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                id="name"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="input-holder col-lg-6">
-              <label id="fatherName-label" htmlFor="fatherName">
-                Father&apos;s Name
-              </label>
-              <input
-                type="text"
-                name="fatherName"
-                value={formData.fatherName}
-                id="fatherName"
-                autoComplete="off"
-                onChange={handleChange}
-              />
+      <h1 className="mb-4" style={{ textAlign: "center" }}>
+        <img className="logo-left" src="./src/assets/hand-in-hand.png" alt="" />
+        Sumadhwa Matrimony
+        <img
+          className="logo-right"
+          src="./src/assets/hand-in-hand.png"
+          alt=""
+        />
+      </h1>
+      <StyledForm action="" onSubmit={handleSubmit}>
+        <h1 className="mt-2 mb-3">Tell us about yourself</h1>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
+            <label id="name-label" htmlFor="name">
+              Name<sup>*</sup>
+              {error.name && (
+                <span className="name-error error-message">
+                  {formData.name === "" ? "Required" : ""}
+                </span>
+              )}
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              id="name"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+          <div className="input-holder col-lg-6">
+            <label id="fatherName-label" htmlFor="fatherName">
+              Father&apos;s Name
+            </label>
+            <input
+              type="text"
+              name="fatherName"
+              value={formData.fatherName}
+              id="fatherName"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
+            <label id="motherName-label" htmlFor="motherName">
+              Mother&apos;s Name
+            </label>
+            <input
+              type="text"
+              name="motherName"
+              value={formData.motherName}
+              id="motherName"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+          <div className="input-holder col-lg-6">
+            <label id="gotra-label" htmlFor="gotra">
+              Gotra
+            </label>
+            <input
+              type="text"
+              name="gotra"
+              value={formData.gotra}
+              id="gotra"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
+            <label id="nakshatra-label" htmlFor="nakshatra">
+              Nakshatra
+            </label>
+            <input
+              type="text"
+              name="nakshatra"
+              value={formData.nakshatra}
+              id="nakshatra"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+          <div className="input-holder col-lg-6">
+            <label id="rashi-label" htmlFor="rashi">
+              Rashi
+            </label>
+            <input
+              type="text"
+              name="rashi"
+              value={formData.rashi}
+              id="rashi"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
+            <label id="gana-label" htmlFor="gana">
+              Gana
+            </label>
+            <input
+              type="text"
+              name="gana"
+              value={formData.gana}
+              id="gana"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+          <div className="input-holder col-lg-6">
+            <label id="nadi-label" htmlFor="nadi">
+              Nadi.
+            </label>
+            <input
+              type="text"
+              name="nadi"
+              value={formData.nadi}
+              id="nadi"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
+            <label id="caste-label" htmlFor="caste">
+              Madhwa/ Smartha
+            </label>
+            <input
+              type="text"
+              name="caste"
+              value={formData.caste}
+              id="caste"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+          <div className="input-holder col-lg-6">
+            <label id="matha-label" htmlFor="matha">
+              Matha.
+            </label>
+            <input
+              type="text"
+              name="matha"
+              value={formData.matha}
+              id="matha"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
+            <label id="dob-label" htmlFor="dob">
+              Date & Time of Birth
+            </label>
+            <input
+              type="text"
+              name="dob"
+              value={formData.dob}
+              id="dob"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+          <div className="input-holder col-lg-6">
+            <label id="placeOfBirth-label" htmlFor="placeOfBirth">
+              Place of Birth
+            </label>
+            <input
+              type="text"
+              name="placeOfBirth"
+              value={formData.placeOfBirth}
+              id="placeOfBirth"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
+            <label id="height-label" htmlFor="height">
+              Height
+            </label>
+            <input
+              type="text"
+              name="height"
+              value={formData.height}
+              id="height"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+          <div className="input-holder col-lg-6">
+            <label id="qualification-label" htmlFor="qualification">
+              Qualification
+            </label>
+            <input
+              type="text"
+              name="qualification"
+              value={formData.qualification}
+              id="qualification"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
+            <label id="workingOrganization-label" htmlFor="workingOrganization">
+              Working Organisation
+            </label>
+            <input
+              type="text"
+              name="workingOrganization"
+              value={formData.workingOrganization}
+              id="workingOrganization"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+          <div className="input-holder col-lg-6">
+            <label id="workingLocation-label" htmlFor="workingLocation">
+              Place of Working
+            </label>
+            <input
+              type="text"
+              name="workingLocation"
+              value={formData.workingLocation}
+              id="workingLocation"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
+            <label id="salary-label" htmlFor="salary">
+              Salary Per Annum
+            </label>
+            <input
+              type="text"
+              name="salary"
+              value={formData.salary}
+              id="salary"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+          <div className="input-holder col-lg-6">
+            <label id="siblings-label" htmlFor="siblings">
+              Siblings
+            </label>
+            <input
+              type="text"
+              name="siblings"
+              value={formData.siblings}
+              id="siblings"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="two col-lg-12 col-md-12 col-11">
+          <div className="input-holder col-lg-12 col-md-11">
+            <label id="contactNumber-label" htmlFor="contactNumber">
+              Contact Nos.<sup>*</sup>
+              {error.contactNumber && (
+                <span className="error-message">
+                  {formData.contactNumber === "" ? "Required" : ""}
+                </span>
+              )}
+            </label>
+            <input
+              type="text"
+              name="contactNumber"
+              value={formData.contactNumber}
+              id="contactNumber"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="two col-lg-12 col-md-12 col-11">
+          <div className="input-holder col-lg-12 col-md-11">
+            <label
+              id="expectationsAboutPartner-label"
+              htmlFor="expectationsAboutPartner"
+            >
+              Expectations about Groom/Bride
+            </label>
+            <textarea
+              name="expectationsAboutPartner"
+              value={formData.expectationsAboutPartner}
+              id="expectationsAboutPartner"
+              className="address-input"
+              autoComplete="off"
+              onChange={handleChange}
+            ></textarea>
+          </div>
+        </div>
+        <div className="two col-lg-12 col-md-12 col-11">
+          <div className="input-holder col-lg-12 col-md-11">
+            <label id="residence-label" htmlFor="residence">
+              Residence
+            </label>
+            <textarea
+              name="residence"
+              value={formData.residence}
+              id="residence"
+              className="address-input"
+              autoComplete="off"
+              onChange={handleChange}
+            ></textarea>
+          </div>
+        </div>
+        <div className="two col-lg-12 col-md-12 col-11">
+          <div className="last-input-holder input-holder col-lg-12 col-md-11">
+            <label id="file-label" htmlFor="upload-file">
+              Upload Photo<sup>*</sup>
+              {error.photo && <span className="error-message">Required</span>}
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              name="photo"
+              id="upload-file"
+              autoComplete="off"
+              onChange={handleFileChange}
+              ref={fileRef}
+            />
+            <div className="preview-holder">
+              {preview && <img src={preview} alt="Preview" />}
             </div>
           </div>
-          <div className="two col-lg-12 col-11">
-            <div className="input-holder col-lg-6">
-              <label id="motherName-label" htmlFor="motherName">
-                Mother&apos;s Name
-              </label>
-              <input
-                type="text"
-                name="motherName"
-                value={formData.motherName}
-                id="motherName"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="input-holder col-lg-6">
-              <label id="gotra-label" htmlFor="gotra">
-                Gotra
-              </label>
-              <input
-                type="text"
-                name="gotra"
-                value={formData.gotra}
-                id="gotra"
-                autoComplete="off"
-                onChange={handleChange}
-              />
+        </div>
+        {/* <div className="two col-lg-12 col-md-12 col-11">
+          <div className="last-input-holder input-holder col-lg-12 col-md-11">
+            <label id="file-label" htmlFor="upload-file">
+              Upload Photo
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              name="photo2"
+              id="upload-file"
+              autoComplete="off"
+              onChange={handleFileChange2}
+              ref={fileRef}
+            />
+            <div className="preview-holder">
+              {preview && <img src={preview} alt="Preview" />}
+              {preview2 && <img src={preview2} alt="Preview" />}
             </div>
           </div>
-          <div className="two col-lg-12 col-11">
-            <div className="input-holder col-lg-6">
-              <label id="nakshatra-label" htmlFor="nakshatra">
-                Nakshatra
-              </label>
-              <input
-                type="text"
-                name="nakshatra"
-                value={formData.nakshatra}
-                id="nakshatra"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="input-holder col-lg-6">
-              <label id="rashi-label" htmlFor="rashi">
-                Rashi
-              </label>
-              <input
-                type="text"
-                name="rashi"
-                value={formData.rashi}
-                id="rashi"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="two col-lg-12 col-11">
-            <div className="input-holder col-lg-6">
-              <label id="gana-label" htmlFor="gana">
-                Gana
-              </label>
-              <input
-                type="text"
-                name="gana"
-                value={formData.gana}
-                id="gana"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="input-holder col-lg-6">
-              <label id="nadi-label" htmlFor="nadi">
-                Nadi.
-              </label>
-              <input
-                type="text"
-                name="nadi"
-                value={formData.nadi}
-                id="nadi"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="two col-lg-12 col-11">
-            <div className="input-holder col-lg-6">
-              <label id="caste-label" htmlFor="caste">
-                Madhwa/ Smartha
-              </label>
-              <input
-                type="text"
-                name="caste"
-                value={formData.caste}
-                id="caste"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="input-holder col-lg-6">
-              <label id="matha-label" htmlFor="matha">
-                Matha.
-              </label>
-              <input
-                type="text"
-                name="matha"
-                value={formData.matha}
-                id="matha"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="two col-lg-12 col-11">
-            <div className="input-holder col-lg-6">
-              <label id="dob-label" htmlFor="dob">
-                Date & Time of Birth
-              </label>
-              <input
-                type="text"
-                name="dob"
-                value={formData.dob}
-                id="dob"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="input-holder col-lg-6">
-              <label id="placeOfBirth-label" htmlFor="placeOfBirth">
-                Place of Birth
-              </label>
-              <input
-                type="text"
-                name="placeOfBirth"
-                value={formData.placeOfBirth}
-                id="placeOfBirth"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="two col-lg-12 col-11">
-            <div className="input-holder col-lg-6">
-              <label id="height-label" htmlFor="height">
-                Height
-              </label>
-              <input
-                type="text"
-                name="height"
-                value={formData.height}
-                id="height"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="input-holder col-lg-6">
-              <label id="qualification-label" htmlFor="qualification">
-                Qualification
-              </label>
-              <input
-                type="text"
-                name="qualification"
-                value={formData.qualification}
-                id="qualification"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="two col-lg-12 col-11">
-            <div className="input-holder col-lg-6">
-              <label id="workingOrganization-label" htmlFor="workingOrganization">
-                Working Organisation
-              </label>
-              <input
-                type="text"
-                name="workingOrganization"
-                value={formData.workingOrganization}
-                id="workingOrganization"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="input-holder col-lg-6">
-              <label id="workingLocation-label" htmlFor="workingLocation">
-                Place of Working
-              </label>
-              <input
-                type="text"
-                name="workingLocation"
-                value={formData.workingLocation}
-                id="workingLocation"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="two col-lg-12 col-11">
-            <div className="input-holder col-lg-6">
-              <label id="salary-label" htmlFor="salary">
-                Salary Per Annum
-              </label>
-              <input
-                type="text"
-                name="salary"
-                value={formData.salary}
-                id="salary"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-            <div className="input-holder col-lg-6">
-              <label id="siblings-label" htmlFor="siblings">
-                Siblings
-              </label>
-              <input
-                type="text"
-                name="siblings"
-                value={formData.siblings}
-                id="siblings"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="two col-lg-12 col-md-12 col-11">
-            <div className="input-holder col-lg-12 col-md-11">
-              <label id="contactNumber-label" htmlFor="contactNumber">
-                Contact Nos.<sup>*</sup>
-                {error.contactNumber && (
-                  <span className="error-message">
-                    {formData.contactNumber === "" ? "Required" : ""}
-                  </span>
-                )}
-              </label>
-              <input
-                type="text"
-                name="contactNumber"
-                value={formData.contactNumber}
-                id="contactNumber"
-                autoComplete="off"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="two col-lg-12 col-md-12 col-11">
-            <div className="input-holder col-lg-12 col-md-11">
-              <label id="expectationsAboutPartner-label" htmlFor="expectationsAboutPartner">
-                Expectations about Groom/Bride
-              </label>
-              <textarea
-                name="expectationsAboutPartner"
-                value={formData.expectationsAboutPartner}
-                id="expectationsAboutPartner"
-                className="address-input"
-                autoComplete="off"
-                onChange={handleChange}
-              ></textarea>
-            </div>
-          </div>
-          <div className="two col-lg-12 col-md-12 col-11">
-            <div className="input-holder col-lg-12 col-md-11">
-              <label id="residence-label" htmlFor="residence">
-                Residence
-              </label>
-              <textarea
-                name="residence"
-                value={formData.residence}
-                id="residence"
-                className="address-input"
-                autoComplete="off"
-                onChange={handleChange}
-              ></textarea>
-            </div>
-          </div>
-          <div className="two col-lg-12 col-md-12 col-11">
-            <div className="last-input-holder input-holder col-lg-12 col-md-11">
-              <label id="file-label" htmlFor="upload-file">
-                Upload Photo in 4:5 Ratio<sup>*</sup>
-                {error.photo && <span className="error-message">Required</span>}
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                name="photo"
-                id="upload-file"
-                autoComplete="off"
-                onChange={handleFileChange}
-                ref={fileRef}
-              />
-              <div className="preview-holder">
-                {preview && <img src={preview} alt="Preview" />}
-              </div>
-            </div>
-          </div>
-          <div className="button-holder col-lg-12 col-md-11 col-sm-10 col-10">
+        </div> */}
+        <div className="button-holder col-lg-12 col-md-11 col-sm-10 col-10">
           <Button
             backgroundColor="blue"
             textColor="white"
@@ -555,9 +589,9 @@ function Form() {
           >
             Submit
           </Button>
-          </div>
-        </StyledForm>
-      </FormSection>
+        </div>
+      </StyledForm>
+    </FormSection>
   );
 }
 

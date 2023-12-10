@@ -75,9 +75,6 @@ const ProfilesList = () => {
     <AdminPanelWrapper>
       <AdminTitle>Profile Lists</AdminTitle>
       <UserList>
-        {/* {users.map((user, index) => (
-          <UserCard />
-        ))} */}
         {profiles.map((profile, index) => (
           <UserCard key={index} profile={profile} />
         ))}

@@ -9,6 +9,35 @@ export const FormSection = styled.section`
     flex-direction: column;
     background-color: #80b8db;
     padding: 30px 0;
+
+    h1 {
+      @media (width >= 320px) and (width <= 425px) {
+        font-size: 2em;
+        text-wrap: nowrap
+      }
+    }
+
+    .logo-left,
+  .logo-right {
+    width: 75px;
+    margin-right: 15px;
+  }
+
+  .logo-left {
+    @media (width >= 320px) and (width <= 425px) {
+      width: 50px;
+      margin: 0;
+    }
+  }
+
+  .logo-right {
+    transform: scaleX(-1);
+    margin-left: 15px;
+
+    @media (width >= 320px) and (width <= 768px) {
+      display: none;
+    }
+  }
 `;
 
 export const StyledForm = styled.form`

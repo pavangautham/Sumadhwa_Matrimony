@@ -1,8 +1,8 @@
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import styled from "styled-components";
-// import UserModel from "../UserPopUp/UserModol";
-// import { useState } from "react";
+import { useState } from "react";
+import ProfileDetailModal from "./profileDetailModal";
 
 const UserCardWrapper = styled.div`
   position: relative;
@@ -111,19 +111,19 @@ interface Profile {
   }
 
 const UserCard: React.FC<{ profile: Profile }> = ({ profile }) => {
-//   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
 //   if (profile.length === 0) {
 //     return <div>No Users Found</div>;
 //   }
 
-//   const openModal = () => {
-//     setIsModalOpen(true);
-//   };
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
 
-//   const closeModal = () => {
-//     setIsModalOpen(false);
-//   };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -133,11 +133,11 @@ const UserCard: React.FC<{ profile: Profile }> = ({ profile }) => {
           {/* <img className="user-image" src={user.Photo} alt="User Photo" /> */}
         </UserImage>
         <UserPhone>{profile.contactNumber}</UserPhone>
-        <ViewMore >
+        <ViewMore onClick={openModal}>
           <i className="bi bi-door-closed-fill me-1"></i>All Details
         </ViewMore>
       </UserCardWrapper>
-      {/* <UserModel isOpen={isModalOpen} onClose={closeModal} /> */}
+      <ProfileDetailModal profileId={profile.id} isOpen={isModalOpen} onClose={closeModal} />
     </>
   );
 }
