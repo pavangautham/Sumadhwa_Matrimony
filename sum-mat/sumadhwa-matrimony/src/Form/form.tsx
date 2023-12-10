@@ -73,7 +73,6 @@ function Form() {
 
     const fileRef = useRef<HTMLInputElement>(null);
     const [preview, setPreview] = useState<string | null>(null);
-    // const [preview2, setPreview2] = useState<string | null>(null);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -114,16 +113,44 @@ function Form() {
         validateFormData();
     };
 
-    // const handleFileChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //   const file = e.target.files?.[0];
+    console.log("access",import.meta.env.VITE_AWS_REGION)
+    const region = import.meta.env.VITE_AWS_REGION
+    const bucketName = import.meta.env.VITE_BUCKET_NAME
 
-    //   setPreview2(file ? URL.createObjectURL(file) : null);
-
-    //   setFormData((prevData) => ({
-    //     ...prevData,
-    //     photo2: file ?? null,
-    //   }));
-    // };
+    const uploadPhoto = async () => {
+      const file = formData.photo;
+  
+      // Check if a file is present
+      if (!file) {
+          throw new Error("Photo is required");
+      }
+  
+      try {
+          // Generate a unique ID for the photo
+          const ext = file.name.split('.').pop();
+          const id = uuidv4();
+  
+          // Upload the photo and get the resulting ID
+          const result = await uploadData({
+              key: `${id}.${ext}`,
+              data: file,
+              options: {
+                  contentType: file.type,
+              },
+          }).result;
+  
+          console.log('Succeeded: ', result);
+  
+          // Return the generated URL
+          const photoUrl = `https://${bucketName}.s3.${region}.amazonaws.com/public/${id}.${ext}`;
+          return photoUrl;
+  
+      } catch (error) {
+          console.log('Error : ', error);
+          throw new Error("Failed to upload photo");
+      }
+  };
+  
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -136,21 +163,24 @@ function Form() {
 
         // Prepare the API request payload using your form data
 
-        // https://{BUCKET_NAME}.s3.{REGION}.amazonaws.com/public/{id}.{ext}
-        try {
-            const ext = formData.photo.name.split('.').pop();
-            const id = uuidv4();
-            const result = await uploadData({
-                key: `${id}.${ext}`,
-                data: formData.photo,
-                options: {
-                    contentType: formData.photo.type, // (String) The default content-type header value of the file when downloading it.
-                }
-            }).result;
-            console.log('Succeeded: ', result);
-        } catch (error) {
-            console.log('Error : ', error);
-        }
+        // https://sumadhwa-matrimony-doc-bucket.s3.ap-south-1.amazonaws.com/public/{id}.{ext}
+        // try {
+        //     const ext = formData.photo.name.split('.').pop();
+        //     const id = uuidv4();
+        //     const result = await uploadData({
+        //         key: `${id}.${ext}`,
+        //         data: formData.photo,
+        //         options: {
+        //             contentType: formData.photo.type, // (String) The default content-type header value of the file when downloading it.
+        //         }
+        //     }).result;
+        //     console.log('Succeeded: ', result);
+        // } catch (error) {
+        //     console.log('Error : ', error);
+        // }
+
+        const photoId = await uploadPhoto();
+
         const apiPayload = {
             name: formData.name,
             description: formData.matha, // Adjust the mapping according to your needs
@@ -174,19 +204,19 @@ function Form() {
             residence: formData.residence,
             siblings: formData.siblings,
             contactNumber: formData.contactNumber,
-            photo: formData.photo,
+            photo: photoId,
         };
 
         try {
             // Make the API request using Axios
-            // const response = await axios.post(
-            //     "https://51kxoxxpf4.execute-api.ap-south-1.amazonaws.com/Stage/add-profile",
-            //     apiPayload
-            // );
+            const response = await axios.post(
+                "https://51kxoxxpf4.execute-api.ap-south-1.amazonaws.com/Stage/add-profile",
+                apiPayload
+            );
 
             // // Handle the API response as needed
-            // console.log("API Response:", response.data);
-            console.log("API Response:", apiPayload);
+            console.log("API Response:", response.data);
+            // console.log("API Response:", apiPayload);
 
             // Reset the form and errors after successful submission
             setFormData({
@@ -577,27 +607,7 @@ function Form() {
                             {preview && <img src={preview} alt="Preview" />}
                         </div>
                     </div>
-                </div>
-                {/* <div className="two col-lg-12 col-md-12 col-11">
-          <div className="last-input-holder input-holder col-lg-12 col-md-11">
-            <label id="file-label" htmlFor="upload-file">
-              Upload Photo
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              name="photo2"
-              id="upload-file"
-              autoComplete="off"
-              onChange={handleFileChange2}
-              ref={fileRef}
-            />
-            <div className="preview-holder">
-              {preview && <img src={preview} alt="Preview" />}
-              {preview2 && <img src={preview2} alt="Preview" />}
-            </div>
-          </div>
-        </div> */}
+                </div>                
                 <div className="button-holder col-lg-12 col-md-11 col-sm-10 col-10">
                     <Button
                         backgroundColor="blue"

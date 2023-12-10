@@ -18,6 +18,12 @@
           "type": "manual"
         }
       },
+      "storage": {
+        "sumadhwamatrimony59261716": {
+          "bucketName": "sumadhwa-matrimony-doc-bucket",
+          "region": "ap-south-1"
+        }
+      },
       "auth": {
         "sumadhwamatrimony244e624f": {}
       },
@@ -25,12 +31,6 @@
         "S3Triggeraeb307fd": {
           "deploymentBucketName": "amplify-sumadhwamatrimony-dev-145715-deployment",
           "s3Key": "amplify-builds/S3Triggeraeb307fd-6b346f744541436b3078-build.zip"
-        }
-      },
-      "storage": {
-        "sumadhwamatrimony59261716": {
-          "bucketName": "sumadhwa-matrimony-doc-bucket",
-          "region": "ap-south-1"
         }
       }
     }

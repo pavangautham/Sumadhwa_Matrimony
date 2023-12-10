@@ -81,7 +81,7 @@ const UserImage = styled.div`
     transition-delay: 180ms;
     width: 100%;
     height: 100%;
-    filter: grayscale(0.7);
+    // filter: grayscale(0.7);
   }
 `;
 
@@ -130,7 +130,7 @@ const UserCard: React.FC<{ profile: Profile }> = ({ profile }) => {
       <UserCardWrapper className="col-lg-3 col-md-5 col-sm-7 col-12">
         <UserName className="card-title">{profile.name}</UserName>
         <UserImage>
-          {/* <img className="user-image" src={user.Photo} alt="User Photo" /> */}
+          <img className="user-image" src={profile.photo} alt="User Photo" />
         </UserImage>
         <UserPhone>{profile.contactNumber}</UserPhone>
         <ViewMore onClick={openModal}>
