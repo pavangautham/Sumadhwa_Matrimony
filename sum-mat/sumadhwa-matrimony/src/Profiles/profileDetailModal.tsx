@@ -362,17 +362,17 @@ function ProfileDetailModal({ isOpen, onClose, profileId }: ProfileDetailModalPr
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="name">Name:</label>
-                <input type="text" name="name" autoComplete="off" />
+                <input type="text" name="name" value={profileDetail?.name} autoComplete="off" />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="fathersname">Father&apos;s Name:</label>
-                <input type="text" name="fathersname" autoComplete="off" />
+                <label htmlFor="fatherName">Father&apos;s Name:</label>
+                <input type="text" name="fatherName" value={profileDetail?.fatherName} autoComplete="off" />
               </InputHolder>
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="mothersname">Mother&apos;s Name:</label>
-                <input type="text" name="mothersname" autoComplete="off" />
+                <label htmlFor="motherName">Mother&apos;s Name:</label>
+                <input type="text" name="motherName" autoComplete="off" />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="gotra">Gotra</label>
@@ -401,8 +401,8 @@ function ProfileDetailModal({ isOpen, onClose, profileId }: ProfileDetailModalPr
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="madhwasmartha">Madhwa/ Smartha:</label>
-                <input type="text" name="madhwasmartha" autoComplete="off" />
+                <label htmlFor="caste">Madhwa/ Smartha:</label>
+                <input type="text" name="caste" autoComplete="off" />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="matha">Matha.:</label>
@@ -411,12 +411,12 @@ function ProfileDetailModal({ isOpen, onClose, profileId }: ProfileDetailModalPr
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="datetimebirth">Date & Time of Birth:</label>
-                <input type="text" name="datetimebirth" autoComplete="off" />
+                <label htmlFor="dob">Date & Time of Birth:</label>
+                <input type="text" name="dob" autoComplete="off" />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="placebirth">Place of Birth:</label>
-                <input type="text" name="placebirth" autoComplete="off" />
+                <label htmlFor="placeOfBirth">Place of Birth:</label>
+                <input type="text" name="placeOfBirth" autoComplete="off" />
               </InputHolder>
             </FieldsHolder>
             <FieldsHolder>
@@ -431,12 +431,12 @@ function ProfileDetailModal({ isOpen, onClose, profileId }: ProfileDetailModalPr
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="workingorg">Working Organisation:</label>
-                <input type="text" name="workingorg" autoComplete="off" />
+                <label htmlFor="workingOrganization">Working Organisation:</label>
+                <input type="text" name="workingOrganization" autoComplete="off" />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="placework">Place of Working:</label>
-                <input type="text" name="placework" autoComplete="off" />
+                <label htmlFor="workingLocation">Place of Working:</label>
+                <input type="text" name="workingLocation" autoComplete="off" />
               </InputHolder>
             </FieldsHolder>
             <FieldsHolder>
@@ -451,8 +451,8 @@ function ProfileDetailModal({ isOpen, onClose, profileId }: ProfileDetailModalPr
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="phone">Contact No.:</label>
-                <input type="text" name="phone" autoComplete="off" />
+                <label htmlFor="contactNumber">Contact No.:</label>
+                <input type="text" name="contactNumber" autoComplete="off" />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="siblings">Siblings:</label>
@@ -461,20 +461,20 @@ function ProfileDetailModal({ isOpen, onClose, profileId }: ProfileDetailModalPr
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="edit-expectations">
+                <label htmlFor="expectationsAboutPartner">
                   Expectations about Groom/Bride:
                 </label>
                 <textarea
-                  name="edit-expectations"
-                  id="edit-expectations"
+                  name="expectationsAboutPartner"
+                  id="expectationsAboutPartner"
                   autoComplete="off"
                 ></textarea>
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="edit-address">Address:</label>
+                <label htmlFor="residence">Residence:</label>
                 <textarea
-                  name="edit-address"
-                  id="edit-address"
+                  name="residence"
+                  id="residence"
                   autoComplete="off"
                 ></textarea>
               </InputHolder>

@@ -52,8 +52,24 @@ const UserList = styled.div`
   }
 `;
 
+const SearchInput = styled.input`
+  padding: 8px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+`;
+
+interface Profile {
+    id: string;
+    name: string;
+    photo: string;
+    contactNumber: string;
+  }
+
 const ProfilesList = () => {
-  const [profiles, setProfiles] = useState([]);
+  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProfiles, setFilteredProfiles] = useState([]);
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -71,11 +87,33 @@ const ProfilesList = () => {
     fetchProfiles();
   }, []);
 
+  useEffect(() => {
+    console.log("searchTerm:", searchTerm);
+    console.log("profiles:", profiles);
+  
+    const filtered = profiles.filter(
+      (profile) =>
+        (profile.name && profile.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (profile.contactNumber && profile.contactNumber.includes(searchTerm))
+    ) as Profile[];
+  
+    console.log("filtered:", filtered);
+  
+    setFilteredProfiles(filtered);
+  }, [searchTerm, profiles]);  
+  
+
   return (
     <AdminPanelWrapper>
       <AdminTitle>Profile Lists</AdminTitle>
+      <SearchInput
+        type="text"
+        placeholder="Search by name or phone number"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
       <UserList>
-        {profiles.map((profile, index) => (
+        {filteredProfiles.map((profile, index) => (
           <UserCard key={index} profile={profile} />
         ))}
       </UserList>
