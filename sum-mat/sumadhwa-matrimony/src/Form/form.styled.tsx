@@ -160,6 +160,10 @@ export const StyledForm = styled.form`
       }
     }
 
+    textarea{
+      color: #000;
+    }
+
     .error-message {
       color: red;
       margin-left: 10px;
