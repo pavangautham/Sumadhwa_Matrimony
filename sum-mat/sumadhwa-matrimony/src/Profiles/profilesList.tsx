@@ -98,7 +98,7 @@ const ProfilesList = () => {
     ) as Profile[];
   
     console.log("filtered:", filtered);
-  
+  // @ts-expect-error
     setFilteredProfiles(filtered);
   }, [searchTerm, profiles]);  
   
