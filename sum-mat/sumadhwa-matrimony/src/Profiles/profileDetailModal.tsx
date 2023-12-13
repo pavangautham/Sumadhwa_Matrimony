@@ -494,69 +494,116 @@ function ProfileDetailModal({ isOpen, onClose, profileId }: ProfileDetailModalPr
             <ViewUserPhoto>
               <img src="./src/assets/react.svg" />
             </ViewUserPhoto>
+            {profileDetail?.name && (
             <DetailsSpan>
               <strong>Name: {profileDetail?.name}</strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.fatherName && (
             <DetailsSpan>
               <strong>Father&apos;s Name: {profileDetail?.fatherName}</strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.motherName && (
             <DetailsSpan>
               <strong>Mother&apos;s Name: {profileDetail?.motherName}</strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.gotra && (
             <DetailsSpan>
               <strong>Gotra: {profileDetail?.gotra}</strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.nakshatra && (
             <DetailsSpan>
               <strong>Nakshatra: {profileDetail?.nakshatra} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.rashi && (
             <DetailsSpan>
               <strong>Rashi: {profileDetail?.rashi} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.gana && (
             <DetailsSpan>
               <strong>Gana: {profileDetail?.gana} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.nadi && (
             <DetailsSpan>
               <strong>Nadi: {profileDetail?.nadi} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.caste && (
             <DetailsSpan>
               <strong>Madhwa/ Smartha: {profileDetail?.caste} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.matha && (
             <DetailsSpan>
               <strong>Matha: {profileDetail?.matha} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.dob && (
             <DetailsSpan>
               <strong>Date & Time of Birth: {profileDetail?.dob} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.placeOfBirth && (
             <DetailsSpan>
               <strong>Place of Birth: {profileDetail?.placeOfBirth} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.height && (
             <DetailsSpan>
               <strong>Height: {profileDetail?.height} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.qualification && (
             <DetailsSpan>
               <strong>Qualification: {profileDetail?.qualification} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.description && (
+            <DetailsSpan>
+              <strong>Other Details: {profileDetail?.description} </strong>
+            </DetailsSpan>
+            )}
+            {profileDetail?.workingOrganization && (
             <DetailsSpan>
               <strong>Working Organisation: {profileDetail?.workingOrganization} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.workingLocation && (
             <DetailsSpan>
               <strong>Place of Working: {profileDetail?.workingLocation} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.salary && (
             <DetailsSpan>
               <strong>Salary Per Annum: {profileDetail?.salary} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.siblings && (
             <DetailsSpan>
               <strong>Siblings: {profileDetail?.siblings} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.contactNumber && (
             <DetailsSpan>
               <strong>Contact No: {profileDetail?.contactNumber} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.expectationsAboutPartner && (
             <DetailsSpan>
               <strong>Expectations about Groom/Bride: {profileDetail?.expectationsAboutPartner} </strong>
             </DetailsSpan>
+            )}
+            {profileDetail?.residence && (
             <DetailsSpan>
               <strong>Address: {profileDetail?.residence} </strong>
             </DetailsSpan>
+            )}
           </ViewDetails>
         )}
       </StyledUserModel>

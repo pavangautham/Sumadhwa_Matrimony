@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export interface IFormData {
   name: string;
+  description: string;
   fatherName: string;
   motherName: string;
   gotra: string;
@@ -40,6 +41,7 @@ interface ErrorData {
 function Form() {
   const [formData, setFormData] = useState<IFormData>({
     name: "",
+    description: "",
     fatherName: "",
     motherName: "",
     gotra: "",
@@ -73,6 +75,7 @@ function Form() {
 
   const fileRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -179,6 +182,8 @@ function Form() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setLoading(true);
+
     // Check if the form data is valid
     // if (!validateFormData()) {
     //   // If not valid, don't proceed with the submission
@@ -191,7 +196,7 @@ function Form() {
 
     const apiPayload = {
       name: formData.name,
-      description: formData.matha, // Adjust the mapping according to your needs
+      description: formData.description,
       fatherName: formData.fatherName,
       motherName: formData.motherName,
       gotra: formData.gotra,
@@ -285,6 +290,7 @@ Contact Number: ${formData.contactNumber}
       // Reset the form and errors after successful submission
       setFormData({
         name: "",
+        description: "",
         fatherName: "",
         motherName: "",
         gotra: "",
@@ -325,6 +331,9 @@ Contact Number: ${formData.contactNumber}
     } catch (error) {
       // Handle API request error
       console.error("API Request Error:", error);
+    } finally {
+      // Set loading back to false when the submission is complete
+      setLoading(false);
     }
   };
 
@@ -474,7 +483,7 @@ Contact Number: ${formData.contactNumber}
           </div>
           <div className="input-holder col-lg-6">
             <label id="matha-label" htmlFor="matha">
-              Matha.
+              Matha
             </label>
             <input
               type="text"
@@ -638,6 +647,24 @@ Contact Number: ${formData.contactNumber}
         </div>
         <div className="two col-lg-12 col-md-12 col-11">
           <div className="input-holder col-lg-12 col-md-11">
+            <label
+              id="description-label"
+              htmlFor="description"
+            >
+              Other Details
+            </label>
+            <textarea
+              name="description"
+              value={formData.description}
+              id="description"
+              className="address-input"
+              autoComplete="off"
+              onChange={handleChange}
+            ></textarea>
+          </div>
+        </div>
+        <div className="two col-lg-12 col-md-12 col-11">
+          <div className="input-holder col-lg-12 col-md-11">
             <label id="residence-label" htmlFor="residence">
               Residence
             </label>
@@ -677,8 +704,9 @@ Contact Number: ${formData.contactNumber}
             textColor="white"
             type="submit"
             name="submit"
+            loading={loading}
           >
-            Submit
+            {loading ? 'Submitting...' : 'Submit'}
           </Button>
         </div>
       </StyledForm>

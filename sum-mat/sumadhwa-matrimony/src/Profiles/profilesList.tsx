@@ -108,7 +108,7 @@ const ProfilesList = () => {
       <AdminTitle>Profile Lists</AdminTitle>
       <SearchInput
         type="text"
-        placeholder="Search by name or phone number"
+        placeholder="Search by name"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
