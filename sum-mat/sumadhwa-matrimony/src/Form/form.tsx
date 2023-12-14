@@ -155,30 +155,6 @@ function Form() {
   const BOT_TOKEN = "6710721716:AAFJCkuFl94excqHHHcz7q2aKr2a85rUDqs";
   const CHAT_ID = "822389037";
 
-  //   const sendTextAndImageToTelegram = async (photoUrl: string) => {
-  //     const messageText = `
-  //       Name: ${formData.name}
-  //       Father's Name: ${formData.fatherName}
-  //       Mother's Name: ${formData.motherName}
-  //       // ... (include other form fields as needed)
-  //     `;
-
-  //     try {
-  //       const response = await axios.post(
-  //         `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,
-  //         {
-  //           chat_id: CHAT_ID,
-  //           photo: photoUrl,
-  //           caption: messageText,
-  //         }
-  //       );
-
-  //       console.log(response.data);
-  //     } catch (error) {
-  //       console.error('Error sending text and image to Telegram:', error);
-  //     }
-  //   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -189,8 +165,6 @@ function Form() {
     //   // If not valid, don't proceed with the submission
     //   return;
     // }
-
-    // Prepare the API request payload using your form data
 
     const photoId = await uploadPhoto();
 
@@ -231,53 +205,44 @@ function Form() {
       console.log("API Response:", response.data);
       // console.log("API Response:", apiPayload);
 
+      const fieldMappings: Record<keyof IFormData, string> = {
+        name: "Name",
+        fatherName: "Father's Name",
+        motherName: "Mother's Name",
+        gotra: "Gotra",
+        nakshatra: "Nakshatra",
+        rashi: "Rashi",
+        gana: "Gana",
+        nadi: "Nadi",
+        caste: "Caste",
+        matha: "MaTa",
+        dob: "Date of Birth & Time",
+        placeOfBirth: "Place of Birth",
+        height: "Height",
+        qualification: "Qualification",
+        contactNumber: "Contact Number",
+        siblings: "Siblings",
+        workingOrganization: "Working Organization",
+        workingLocation: "Working Location",
+        expectationsAboutPartner: "Expectations About Partner",
+        salary: "Salary per Annum",
+        description: "Other Details",
+        residence: "Address"
+      };
+
       // Send form data and photo to Telegram bot
       const telegramApiPayload = {
         chat_id: CHAT_ID,
         photo: photoId,
-        caption: `
-Name: ${formData.name}
-
-Father's Name: ${formData.fatherName}
-
-Mother's Name: ${formData.motherName}
-
-Gotra: ${formData.gotra}
-
-Nakshatra: ${formData.nakshatra}
-
-Rashi: ${formData.rashi}
-
-Gana: ${formData.gana}
-
-Nadi: ${formData.nadi}
-
-Caste: ${formData.caste}
-
-Matha: ${formData.matha}
-
-Date of Birth: ${formData.dob}
-
-Place of Birth: ${formData.placeOfBirth}
-
-Height: ${formData.height}
-
-Qualification: ${formData.qualification}
-
-Working Organization: ${formData.workingOrganization}
-
-Working Location: ${formData.workingLocation}
-
-Expectations About Partner: ${formData.expectationsAboutPartner}
-
-Salary: ${formData.salary}
-
-Residence: ${formData.residence}
-
-Siblings: ${formData.siblings}
-
-Contact Number: ${formData.contactNumber}
-  `,
+        caption: Object.entries(formData)
+    .filter(([key, value]) => value && key !== 'photo')
+    .map(([key, value]) => `${fieldMappings[key] || key}: ${value}`)
+    .join('\n\n'),
+//         caption: `
+// Name: ${formData.name}
+// Father's Name: ${formData.fatherName}
+// Mother's Name: ${formData.motherName}
+//   `,
       };
 
       const telegramApiResponse = await axios.post(
@@ -339,7 +304,7 @@ Contact Number: ${formData.contactNumber}
 
   return (
     <FormSection>
-      <h1 className="mb-4" style={{ textAlign: "center" }}>
+      <h2 className="mb-4" style={{ textAlign: "center" }}>
         <img className="logo-left" src="./src/assets/hand-in-hand.png" alt="" />
         Sumadhwa Matrimony
         <img
@@ -347,9 +312,9 @@ Contact Number: ${formData.contactNumber}
           src="./src/assets/hand-in-hand.png"
           alt=""
         />
-      </h1>
+      </h2>
       <StyledForm action="" onSubmit={handleSubmit}>
-        <h1 className="mt-2 mb-3">Tell us about yourself</h1>
+        <h2 className="mt-2 mb-3">Please Fill The Form</h2>
         <div className="two col-lg-12 col-11">
           <div className="input-holder col-lg-6">
             <label id="name-label" htmlFor="name">
@@ -470,7 +435,7 @@ Contact Number: ${formData.contactNumber}
         <div className="two col-lg-12 col-11">
           <div className="input-holder col-lg-6">
             <label id="caste-label" htmlFor="caste">
-              Madhwa/ Smartha
+              Caste: Madhwa/ Smartha
             </label>
             <input
               type="text"
@@ -483,7 +448,7 @@ Contact Number: ${formData.contactNumber}
           </div>
           <div className="input-holder col-lg-6">
             <label id="matha-label" htmlFor="matha">
-              Matha
+              MaTa
             </label>
             <input
               type="text"
@@ -666,7 +631,7 @@ Contact Number: ${formData.contactNumber}
         <div className="two col-lg-12 col-md-12 col-11">
           <div className="input-holder col-lg-12 col-md-11">
             <label id="residence-label" htmlFor="residence">
-              Residence
+              Address
             </label>
             <textarea
               name="residence"
