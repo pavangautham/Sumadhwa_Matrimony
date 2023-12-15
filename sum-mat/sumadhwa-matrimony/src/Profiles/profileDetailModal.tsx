@@ -51,7 +51,7 @@ export const StyledUserModel = styled.div`
   }
 
   @media (width >= 320px) and (width <= 425px) {
-    height: 425px;
+    height: 580px;
   }
 
   .popup-top {
@@ -224,7 +224,7 @@ export const DetailsSpan = styled.span`
   text-align: justify;
 
   @media (width >= 320px) and (width <= 425px) {
-    font-size: 14px;
+    font-size: 16px;
     text-align: left;
   }
 
