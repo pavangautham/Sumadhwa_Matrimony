@@ -40,6 +40,11 @@ const AdminTitle = styled.h1`
   }
 `;
 
+const ProfileCount = styled.div`
+  color: #f7fff7;
+  font-size: 20px;
+`
+
 const UserList = styled.div`
   width: 100%;
   min-height: 100vh;
@@ -64,6 +69,7 @@ interface Profile {
     name: string;
     photo: string;
     contactNumber: string;
+    createdAt: number;
   }
 
 const ProfilesList = () => {
@@ -87,26 +93,40 @@ const ProfilesList = () => {
     fetchProfiles();
   }, []);
 
+  // useEffect(() => {
+  //   console.log("searchTerm:", searchTerm);
+  //   console.log("profiles:", profiles);
+  
+  //   const filtered = profiles.filter(
+  //     (profile) =>
+  //       (profile.name && profile.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+  //       (profile.contactNumber && profile.contactNumber.includes(searchTerm))
+  //   ) as Profile[];
+  
+  //   console.log("filtered:", filtered);
+  // // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // // @ts-expect-error
+  //   setFilteredProfiles(filtered);
+  // }, [searchTerm, profiles]);  
+
   useEffect(() => {
-    console.log("searchTerm:", searchTerm);
-    console.log("profiles:", profiles);
-  
-    const filtered = profiles.filter(
-      (profile) =>
-        (profile.name && profile.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (profile.contactNumber && profile.contactNumber.includes(searchTerm))
-    ) as Profile[];
-  
-    console.log("filtered:", filtered);
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
+    const filtered = profiles
+      .filter(
+        (profile) =>
+          (profile.name && profile.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (profile.contactNumber && profile.contactNumber.includes(searchTerm))
+      )
+      .sort((a, b) => b.createdAt - a.createdAt) as Profile[];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     setFilteredProfiles(filtered);
-  }, [searchTerm, profiles]);  
+  }, [searchTerm, profiles]);
   
 
   return (
     <AdminPanelWrapper>
       <AdminTitle>Profile Lists</AdminTitle>
+      <ProfileCount>Total Profiles: {profiles.length}</ProfileCount>
       <SearchInput
         type="text"
         placeholder="Search by name"
