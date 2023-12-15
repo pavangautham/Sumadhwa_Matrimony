@@ -1,6 +1,4 @@
 import React from 'react'
-import { Container } from 'react-bootstrap';
-import './App.css'
 import Form from './Form/form';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProfilesList from './Profiles/profilesList';
@@ -9,7 +7,6 @@ import ProfilesList from './Profiles/profilesList';
 
 const App: React.FC = () => {
   return (
-    <Container className="mt-4">
       <Router>
       <Routes>
         <Route path="/" element={<Form />} />
@@ -17,7 +14,6 @@ const App: React.FC = () => {
         <Route path="/profiles" element={<ProfilesList />} />
       </Routes>
     </Router>
-    </Container>
   );
 }
 

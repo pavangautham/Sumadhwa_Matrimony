@@ -4,10 +4,11 @@ import { FormSection, StyledForm } from "./form.styled";
 import { Button } from "../Components/button";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import LoaderComponent from "../Components/loader";
+import Swal from "sweetalert2";
 
 export interface IFormData {
   name: string;
-  description: string;
   fatherName: string;
   motherName: string;
   gotra: string;
@@ -29,6 +30,7 @@ export interface IFormData {
   contactNumber: string;
   alternativePhone: string;
   residence: string;
+  description: string;
   photo: File | null;
   photo2: File | null;
   [key: string]: string | File | null;
@@ -41,7 +43,6 @@ interface ErrorData {
 function Form() {
   const [formData, setFormData] = useState<IFormData>({
     name: "",
-    description: "",
     fatherName: "",
     motherName: "",
     gotra: "",
@@ -62,6 +63,7 @@ function Form() {
     siblings: "",
     contactNumber: "",
     alternativePhone: "",
+    description: "",
     residence: "",
     photo: null,
     photo2: null,
@@ -170,7 +172,6 @@ function Form() {
 
     const apiPayload = {
       name: formData.name,
-      description: formData.description,
       fatherName: formData.fatherName,
       motherName: formData.motherName,
       gotra: formData.gotra,
@@ -191,6 +192,7 @@ function Form() {
       residence: formData.residence,
       siblings: formData.siblings,
       contactNumber: formData.contactNumber,
+      description: formData.description,
       photo: photoId,
     };
 
@@ -252,10 +254,16 @@ function Form() {
 
       console.log("Telegram API Response:", telegramApiResponse.data);
 
+      Swal.fire({
+        title: "Success!!",
+        text: "Successfully Submitted",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+
       // Reset the form and errors after successful submission
       setFormData({
         name: "",
-        description: "",
         fatherName: "",
         motherName: "",
         gotra: "",
@@ -276,6 +284,7 @@ function Form() {
         siblings: "",
         contactNumber: "",
         alternativePhone: "",
+        description: "",
         residence: "",
         photo: null,
         photo2: null,
@@ -296,6 +305,13 @@ function Form() {
     } catch (error) {
       // Handle API request error
       console.error("API Request Error:", error);
+      // alert(error)
+      Swal.fire({
+        title: "Error!!",
+        text: "Something went wrong",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     } finally {
       // Set loading back to false when the submission is complete
       setLoading(false);
@@ -671,7 +687,8 @@ function Form() {
             name="submit"
             loading={loading}
           >
-            {loading ? 'Submitting...' : 'Submit'}
+            Submit
+            {loading && <LoaderComponent />}
           </Button>
         </div>
       </StyledForm>

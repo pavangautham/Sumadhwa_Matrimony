@@ -15,6 +15,7 @@ export const Button = styled.button.attrs<ButtonProps>(() => ({
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
+  display: flex;
   cursor: ${(props) => (props.loading ? 'not-allowed' : 'pointer')}; // Disable cursor when loading
 
   ${(props) =>

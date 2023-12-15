@@ -98,6 +98,7 @@ const ProfilesList = () => {
     ) as Profile[];
   
     console.log("filtered:", filtered);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
     setFilteredProfiles(filtered);
   }, [searchTerm, profiles]);  
