@@ -1,15 +1,17 @@
 // import React from "react";
 import styled from "styled-components";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IFormData } from "../Form/form";
+import { uploadData } from "aws-amplify/storage";
 import axios from "axios";
 import Swal from "sweetalert2";
 import LoaderComponent from "../Components/loader";
+import { v4 as uuidv4 } from "uuid";
 
 interface OveylayProps {
-    $isOpen: boolean;
-  }
+  $isOpen: boolean;
+}
 
 const Oveylay = styled.div<OveylayProps>`
   position: fixed;
@@ -20,7 +22,7 @@ const Oveylay = styled.div<OveylayProps>`
   background-color: rgba(0, 0, 0, 0.69);
   backdrop-filter: blur(2px);
   z-index: 1000;
-  display: ${(props) => (props.$isOpen ? 'block' : 'none')};
+  display: ${(props) => (props.$isOpen ? "block" : "none")};
 `;
 
 export const StyledUserModel = styled.div`
@@ -215,7 +217,6 @@ export const ViewUserDetails = styled.div`
   }
 `;
 
-
 export const DetailsSpan = styled.span`
   font-size: 17px;
   letter-spacing: 1px;
@@ -323,7 +324,7 @@ export const InputHolder = styled.div`
     transition: all 0.2s ease;
     font-size: 17px;
     letter-spacing: 0.7px;
-    box-shadow: 1px 1px 0 #088F8F;
+    box-shadow: 1px 1px 0 #088f8f;
     font-weight: 500;
 
     @media (width >= 320px) and (width <= 1242px) {
@@ -370,15 +371,21 @@ export const InputHolder = styled.div`
 `;
 
 interface ProfileDetailModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    profileId: string;
-  }
+  isOpen: boolean;
+  onClose: () => void;
+  profileId: string;
+}
 
-function ProfileDetailModal({ isOpen, onClose, profileId }: ProfileDetailModalProps) {
+function ProfileDetailModal({
+  isOpen,
+  onClose,
+  profileId,
+}: ProfileDetailModalProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [profileDetail,setProfileDetail] = useState<IFormData>();
+  const [profileDetail, setProfileDetail] = useState<IFormData>();
   const [isLoading, setIsLoading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState<IFormData>({
     name: "",
     id: profileId ? profileId : "",
@@ -432,17 +439,100 @@ function ProfileDetailModal({ isOpen, onClose, profileId }: ProfileDetailModalPr
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    setPreview(file ? URL.createObjectURL(file) : null);
+
+    setFormData((prevData) => ({
+      ...prevData,
+      //   photo: file !== undefined ? (file as File) : null,
+      photo: file ?? null,
+    }));
+  };
+
+  const region = import.meta.env.VITE_AWS_REGION;
+  const bucketName = import.meta.env.VITE_BUCKET_NAME;
+
+  const uploadPhoto = async () => {
+    const file = formData.photo;
+
+    // Check if a file is present
+    if (file) {
+      try {
+        // Generate a unique ID for the photo
+        const ext = file.name.split(".").pop();
+        const id = uuidv4();
+
+        // Upload the photo and get the resulting ID
+        const result = await uploadData({
+          key: `${id}.${ext}`,
+          data: file,
+          options: {
+            contentType: file.type,
+          },
+        }).result;
+
+        console.log("Succeeded: ", result);
+
+        // Return the generated URL
+        const photoUrl = `https://${bucketName}.s3.${region}.amazonaws.com/public/${id}.${ext}`;
+        return photoUrl;
+      } catch (error) {
+        console.log("Error : ", error);
+        throw new Error("Failed to upload photo");
+      }
+    }
+
+    // If no file is present, return null or any other default value
+    return null;
+  };
+
   const handleSaveClick = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-  
+    let photoId = null;
+
     try {
+      // Check if a photo is present
+      if (formData.photo) {
+        // If photo is present, upload it and get the ID
+        photoId = await uploadPhoto();
+      }
+
+      const apiPayload = {
+        name: formData.name,
+        id: profileId,
+        fatherName: formData.fatherName,
+        motherName: formData.motherName,
+        gotra: formData.gotra,
+        nakshatra: formData.nakshatra,
+        rashi: formData.rashi,
+        gana: formData.gana,
+        nadi: formData.nadi,
+        caste: formData.caste,
+        matha: formData.matha,
+        dob: formData.dob,
+        placeOfBirth: formData.placeOfBirth,
+        height: formData.height,
+        qualification: formData.qualification,
+        workingOrganization: formData.workingOrganization,
+        workingLocation: formData.workingLocation,
+        expectationsAboutPartner: formData.expectationsAboutPartner,
+        salary: formData.salary,
+        residence: formData.residence,
+        siblings: formData.siblings,
+        contactNumber: formData.contactNumber,
+        description: formData.description,
+        photo: photoId,
+      };
+
       const response = await axios.post(
         "https://51kxoxxpf4.execute-api.ap-south-1.amazonaws.com/Stage/add-profile",
-        formData
+        apiPayload
       );
-        console.log("updated response", response.data)
-        setIsLoading(false);
+      console.log("updated response", response.data);
+      setIsLoading(false);
       Swal.fire({
         title: "Success!!",
         text: "Successfully Updated",
@@ -487,8 +577,8 @@ function ProfileDetailModal({ isOpen, onClose, profileId }: ProfileDetailModalPr
           {isEditing ? <h3>Edit User Details</h3> : <h3>User Details</h3>}
           {isEditing ? (
             <DiscardButton onClick={handleCancelClick}>
-            Cancel<i className="bi bi-x-circle ms-1"></i>
-          </DiscardButton>
+              Cancel<i className="bi bi-x-circle ms-1"></i>
+            </DiscardButton>
           ) : (
             <EditButton onClick={handelEditClick}>
               Edit<i className="bi bi-pencil-fill ms-1"></i>
@@ -500,98 +590,230 @@ function ProfileDetailModal({ isOpen, onClose, profileId }: ProfileDetailModalPr
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="name">Name:</label>
-                <input type="text" name="name" value={formData.name || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="fatherName">Father&apos;s Name:</label>
-                <input type="text" name="fatherName" value={formData.fatherName || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="fatherName"
+                  value={formData.fatherName || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="motherName">Mother&apos;s Name:</label>
-                <input type="text" name="motherName" value={formData?.motherName || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="motherName"
+                  value={formData?.motherName || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="gotra">Gotra</label>
-                <input type="text" name="gotra" value={formData?.gotra || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="gotra"
+                  value={formData?.gotra || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="nakshatra">Nakshatra:</label>
-                <input type="text" name="nakshatra" value={formData?.nakshatra || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="nakshatra"
+                  value={formData?.nakshatra || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="rashi">Rashi</label>
-                <input type="text" name="rashi" value={formData?.rashi || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="rashi"
+                  value={formData?.rashi || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="gana">Gana:</label>
-                <input type="text" name="gana" value={formData?.gana || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="gana"
+                  value={formData?.gana || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="nadi">Nadi.:</label>
-                <input type="text" name="nadi" value={formData?.nadi || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="nadi"
+                  value={formData?.nadi || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="caste">Madhwa/ Smartha:</label>
-                <input type="text" name="caste" value={formData?.caste || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="caste"
+                  value={formData?.caste || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="matha">Matha.:</label>
-                <input type="text" name="matha" value={formData?.matha || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="matha"
+                  value={formData?.matha || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="dob">Date & Time of Birth:</label>
-                <input type="text" name="dob" value={formData?.dob || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="dob"
+                  value={formData?.dob || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="placeOfBirth">Place of Birth:</label>
-                <input type="text" name="placeOfBirth" value={formData?.placeOfBirth || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="placeOfBirth"
+                  value={formData?.placeOfBirth || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="height">Height:</label>
-                <input type="text" name="height" value={formData?.height || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="height"
+                  value={formData?.height || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="qualification">Qualification:</label>
-                <input type="text" name="qualification" value={formData?.qualification || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="qualification"
+                  value={formData?.qualification || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="workingOrganization">Working Organisation:</label>
-                <input type="text" name="workingOrganization" value={formData?.workingOrganization || ""} onChange={handleChange} autoComplete="off" />
+                <label htmlFor="workingOrganization">
+                  Working Organisation:
+                </label>
+                <input
+                  type="text"
+                  name="workingOrganization"
+                  value={formData?.workingOrganization || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="workingLocation">Place of Working:</label>
-                <input type="text" name="workingLocation" value={formData?.workingLocation || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="workingLocation"
+                  value={formData?.workingLocation || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="salary">Salary Per Annum:</label>
-                <input type="text" name="salary" value={formData?.salary || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="salary"
+                  value={formData?.salary || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="siblings">Siblings:</label>
-                <input type="text" name="siblings" value={formData?.siblings || ""} onChange={handleChange} autoComplete="off" />
+                <input
+                  type="text"
+                  name="siblings"
+                  value={formData?.siblings || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
               </InputHolder>
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="contactNumber">Contact No.:</label>
-                <input type="text" name="contactNumber" value={formData?.contactNumber || ""} onChange={handleChange} autoComplete="off" />
-              </InputHolder>              
+                <input
+                  type="text"
+                  name="contactNumber"
+                  value={formData?.contactNumber || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
+              </InputHolder>
+              <InputHolder className="input-holder mb-2 col-lg-5">
+                <label htmlFor="photo">Change Photo:</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileRef}
+                  name="photo"
+                  autoComplete="off"
+                  onChange={handleFileChange}
+                />
+              </InputHolder>
+              {preview && (
+                <div className="preview-holder">
+                  <img src={preview} alt="Preview" />
+                </div>
+              )}
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
@@ -629,142 +851,144 @@ function ProfileDetailModal({ isOpen, onClose, profileId }: ProfileDetailModalPr
         ) : (
           <ViewDetails>
             <ViewUserPhoto>
-              <img src={profileDetail?.photo as unknown as string} alt={profileDetail?.name} />
+              <img
+                src={profileDetail?.photo as unknown as string}
+                alt={profileDetail?.name}
+              />
             </ViewUserPhoto>
             <ViewUserDetails>
-
-            {profileDetail?.name && (
-            <DetailsSpan>
-              <strong>Name: </strong>
-              {profileDetail?.name}
-            </DetailsSpan>
-            )}
-            {profileDetail?.fatherName && (
-            <DetailsSpan>
-              <strong>Father&apos;s Name: </strong>
-              {profileDetail?.fatherName}
-            </DetailsSpan>
-            )}
-            {profileDetail?.motherName && (
-            <DetailsSpan>
-              <strong>Mother&apos;s Name: </strong>
-              {profileDetail?.motherName}
-            </DetailsSpan>
-            )}
-            {profileDetail?.gotra && (
-            <DetailsSpan>
-              <strong>Gotra: </strong>
-              {profileDetail?.gotra}
-            </DetailsSpan>
-            )}
-            {profileDetail?.nakshatra && (
-            <DetailsSpan>
-              <strong>Nakshatra:  </strong>
-              {profileDetail?.nakshatra}
-            </DetailsSpan>
-            )}
-            {profileDetail?.rashi && (
-            <DetailsSpan>
-              <strong>Rashi:  </strong>
-              {profileDetail?.rashi}
-            </DetailsSpan>
-            )}
-            {profileDetail?.gana && (
-            <DetailsSpan>
-              <strong>Gana:  </strong>
-              {profileDetail?.gana}
-            </DetailsSpan>
-            )}
-            {profileDetail?.nadi && (
-            <DetailsSpan>
-              <strong>Nadi:  </strong>
-              {profileDetail?.nadi}
-            </DetailsSpan>
-            )}
-            {profileDetail?.caste && (
-            <DetailsSpan>
-              <strong>Madhwa/ Smartha:  </strong>
-              {profileDetail?.caste}
-            </DetailsSpan>
-            )}
-            {profileDetail?.matha && (
-            <DetailsSpan>
-              <strong>Matha:  </strong>
-              {profileDetail?.matha}
-            </DetailsSpan>
-            )}
-            {profileDetail?.dob && (
-            <DetailsSpan>
-              <strong>Date & Time of Birth:  </strong>
-              {profileDetail?.dob}
-            </DetailsSpan>
-            )}
-            {profileDetail?.placeOfBirth && (
-            <DetailsSpan>
-              <strong>Place of Birth:  </strong>
-              {profileDetail?.placeOfBirth}
-            </DetailsSpan>
-            )}
-            {profileDetail?.height && (
-            <DetailsSpan>
-              <strong>Height:  </strong>
-              {profileDetail?.height}
-            </DetailsSpan>
-            )}
-            {profileDetail?.qualification && (
-            <DetailsSpan>
-              <strong>Qualification:  </strong>
-              {profileDetail?.qualification}
-            </DetailsSpan>
-            )}
-            {profileDetail?.description && (
-            <DetailsSpan>
-              <strong>Other Details:  </strong>
-              {profileDetail?.description}
-            </DetailsSpan>
-            )}
-            {profileDetail?.workingOrganization && (
-            <DetailsSpan>
-              <strong>Working Organisation:  </strong>
-              {profileDetail?.workingOrganization}
-            </DetailsSpan>
-            )}
-            {profileDetail?.workingLocation && (
-            <DetailsSpan>
-              <strong>Place of Working:  </strong>
-              {profileDetail?.workingLocation}
-            </DetailsSpan>
-            )}
-            {profileDetail?.salary && (
-            <DetailsSpan>
-              <strong>Salary Per Annum:  </strong>
-              {profileDetail?.salary}
-            </DetailsSpan>
-            )}
-            {profileDetail?.siblings && (
-            <DetailsSpan>
-              <strong>Siblings: </strong>
-              {profileDetail?.siblings}
-            </DetailsSpan>
-            )}
-            {profileDetail?.contactNumber && (
-            <DetailsSpan>
-              <strong>Contact No: </strong>
-              {profileDetail?.contactNumber}
-            </DetailsSpan>
-            )}
-            {profileDetail?.expectationsAboutPartner && (
-            <DetailsSpan>
-              <strong>Expectations about Groom/Bride: </strong>
-              {profileDetail?.expectationsAboutPartner}
-            </DetailsSpan>
-            )}
-            {profileDetail?.residence && (
-            <DetailsSpan>
-              <strong>Address: </strong>
-              {profileDetail?.residence}
-            </DetailsSpan>
-            )}
+              {profileDetail?.name && (
+                <DetailsSpan>
+                  <strong>Name: </strong>
+                  {profileDetail?.name}
+                </DetailsSpan>
+              )}
+              {profileDetail?.fatherName && (
+                <DetailsSpan>
+                  <strong>Father&apos;s Name: </strong>
+                  {profileDetail?.fatherName}
+                </DetailsSpan>
+              )}
+              {profileDetail?.motherName && (
+                <DetailsSpan>
+                  <strong>Mother&apos;s Name: </strong>
+                  {profileDetail?.motherName}
+                </DetailsSpan>
+              )}
+              {profileDetail?.gotra && (
+                <DetailsSpan>
+                  <strong>Gotra: </strong>
+                  {profileDetail?.gotra}
+                </DetailsSpan>
+              )}
+              {profileDetail?.nakshatra && (
+                <DetailsSpan>
+                  <strong>Nakshatra: </strong>
+                  {profileDetail?.nakshatra}
+                </DetailsSpan>
+              )}
+              {profileDetail?.rashi && (
+                <DetailsSpan>
+                  <strong>Rashi: </strong>
+                  {profileDetail?.rashi}
+                </DetailsSpan>
+              )}
+              {profileDetail?.gana && (
+                <DetailsSpan>
+                  <strong>Gana: </strong>
+                  {profileDetail?.gana}
+                </DetailsSpan>
+              )}
+              {profileDetail?.nadi && (
+                <DetailsSpan>
+                  <strong>Nadi: </strong>
+                  {profileDetail?.nadi}
+                </DetailsSpan>
+              )}
+              {profileDetail?.caste && (
+                <DetailsSpan>
+                  <strong>Madhwa/ Smartha: </strong>
+                  {profileDetail?.caste}
+                </DetailsSpan>
+              )}
+              {profileDetail?.matha && (
+                <DetailsSpan>
+                  <strong>Matha: </strong>
+                  {profileDetail?.matha}
+                </DetailsSpan>
+              )}
+              {profileDetail?.dob && (
+                <DetailsSpan>
+                  <strong>Date & Time of Birth: </strong>
+                  {profileDetail?.dob}
+                </DetailsSpan>
+              )}
+              {profileDetail?.placeOfBirth && (
+                <DetailsSpan>
+                  <strong>Place of Birth: </strong>
+                  {profileDetail?.placeOfBirth}
+                </DetailsSpan>
+              )}
+              {profileDetail?.height && (
+                <DetailsSpan>
+                  <strong>Height: </strong>
+                  {profileDetail?.height}
+                </DetailsSpan>
+              )}
+              {profileDetail?.qualification && (
+                <DetailsSpan>
+                  <strong>Qualification: </strong>
+                  {profileDetail?.qualification}
+                </DetailsSpan>
+              )}
+              {profileDetail?.description && (
+                <DetailsSpan>
+                  <strong>Other Details: </strong>
+                  {profileDetail?.description}
+                </DetailsSpan>
+              )}
+              {profileDetail?.workingOrganization && (
+                <DetailsSpan>
+                  <strong>Working Organisation: </strong>
+                  {profileDetail?.workingOrganization}
+                </DetailsSpan>
+              )}
+              {profileDetail?.workingLocation && (
+                <DetailsSpan>
+                  <strong>Place of Working: </strong>
+                  {profileDetail?.workingLocation}
+                </DetailsSpan>
+              )}
+              {profileDetail?.salary && (
+                <DetailsSpan>
+                  <strong>Salary Per Annum: </strong>
+                  {profileDetail?.salary}
+                </DetailsSpan>
+              )}
+              {profileDetail?.siblings && (
+                <DetailsSpan>
+                  <strong>Siblings: </strong>
+                  {profileDetail?.siblings}
+                </DetailsSpan>
+              )}
+              {profileDetail?.contactNumber && (
+                <DetailsSpan>
+                  <strong>Contact No: </strong>
+                  {profileDetail?.contactNumber}
+                </DetailsSpan>
+              )}
+              {profileDetail?.expectationsAboutPartner && (
+                <DetailsSpan>
+                  <strong>Expectations about Groom/Bride: </strong>
+                  {profileDetail?.expectationsAboutPartner}
+                </DetailsSpan>
+              )}
+              {profileDetail?.residence && (
+                <DetailsSpan>
+                  <strong>Address: </strong>
+                  {profileDetail?.residence}
+                </DetailsSpan>
+              )}
             </ViewUserDetails>
           </ViewDetails>
         )}
