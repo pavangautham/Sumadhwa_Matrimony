@@ -72,8 +72,9 @@ function Form() {
   const [error, setError] = useState<ErrorData>({
     name: false,
     contactNumber: false,
-    photo: false,
   });
+
+  console.log("error",error)
 
   const fileRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -88,18 +89,16 @@ function Form() {
 
   const validateFormData = () => {
     const newErrors: ErrorData = {};
-
-    // Perform validation for each field
-    Object.keys(formData).forEach((key) => {
-      newErrors[key] = formData[key] === "";
-    });
-
-    // Additional validation for specific fields
-    newErrors.photo = formData.photo === null;
-
+  
+    // Check if "name" is empty
+    newErrors.name = formData.name === "";
+  
+    // Check if "contactNumber" is empty
+    newErrors.contactNumber = formData.contactNumber === "";
+  
     // Set errors
     setError(newErrors);
-
+  
     // Return true if there are no errors, false otherwise
     return Object.values(newErrors).every((error) => !error);
   };
@@ -114,8 +113,6 @@ function Form() {
       //   photo: file !== undefined ? (file as File) : null,
       photo: file ?? null,
     }));
-
-    validateFormData();
   };
 
   const region = import.meta.env.VITE_AWS_REGION;
@@ -123,36 +120,38 @@ function Form() {
 
   const uploadPhoto = async () => {
     const file = formData.photo;
-
+  
     // Check if a file is present
-    if (!file) {
-      throw new Error("Photo is required");
+    if (file) {
+      try {
+        // Generate a unique ID for the photo
+        const ext = file.name.split(".").pop();
+        const id = uuidv4();
+  
+        // Upload the photo and get the resulting ID
+        const result = await uploadData({
+          key: `${id}.${ext}`,
+          data: file,
+          options: {
+            contentType: file.type,
+          },
+        }).result;
+  
+        console.log("Succeeded: ", result);
+  
+        // Return the generated URL
+        const photoUrl = `https://${bucketName}.s3.${region}.amazonaws.com/public/${id}.${ext}`;
+        return photoUrl;
+      } catch (error) {
+        console.log("Error : ", error);
+        throw new Error("Failed to upload photo");
+      }
     }
-
-    try {
-      // Generate a unique ID for the photo
-      const ext = file.name.split(".").pop();
-      const id = uuidv4();
-
-      // Upload the photo and get the resulting ID
-      const result = await uploadData({
-        key: `${id}.${ext}`,
-        data: file,
-        options: {
-          contentType: file.type,
-        },
-      }).result;
-
-      console.log("Succeeded: ", result);
-
-      // Return the generated URL
-      const photoUrl = `https://${bucketName}.s3.${region}.amazonaws.com/public/${id}.${ext}`;
-      return photoUrl;
-    } catch (error) {
-      console.log("Error : ", error);
-      throw new Error("Failed to upload photo");
-    }
+  
+    // If no file is present, return null or any other default value
+    return null;
   };
+  
 
   const BOT_TOKEN = "6710721716:AAFJCkuFl94excqHHHcz7q2aKr2a85rUDqs";
   const CHAT_ID = -1002136474672;
@@ -160,15 +159,22 @@ function Form() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    setLoading(true);
-
     // Check if the form data is valid
-    // if (!validateFormData()) {
-    //   // If not valid, don't proceed with the submission
-    //   return;
-    // }
+    if (!validateFormData()) {
+      // If not valid, don't proceed with the submission
+      return;
+    }
+    setLoading(true);
+    let photoId = null;
+    // const photoId = await uploadPhoto();
 
-    const photoId = await uploadPhoto();
+    try {
+
+      // Check if a photo is present
+    if (formData.photo) {
+      // If photo is present, upload it and get the ID
+      photoId = await uploadPhoto();
+    }
 
     const apiPayload = {
       name: formData.name,
@@ -196,7 +202,6 @@ function Form() {
       photo: photoId,
     };
 
-    try {
       // Make the API request using Axios
       const response = await axios.post(
         "https://51kxoxxpf4.execute-api.ap-south-1.amazonaws.com/Stage/add-profile",
@@ -233,6 +238,7 @@ function Form() {
       };
 
       // Send form data and photo to Telegram bot
+      if (photoId) {
       const telegramApiPayload = {
         chat_id: CHAT_ID,
         photo: photoId,
@@ -253,6 +259,22 @@ function Form() {
       );
 
       console.log("Telegram API Response:", telegramApiResponse.data);
+      } else {
+        // If no photo, use sendMessage API
+      const telegramApiPayload = {
+        chat_id: CHAT_ID,
+        text: Object.entries(formData)
+          .filter(([key, value]) => value && key !== 'photo')
+          .map(([key, value]) => `${fieldMappings[key] || key}: ${value}`)
+          .join('\n\n'),
+      };
+
+      const telegramApiResponse = await axios.post(
+        `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
+        telegramApiPayload
+      );
+      console.log("Telegram API Response:", telegramApiResponse.data);
+      }
 
       Swal.fire({
         title: "Success!!",
@@ -298,7 +320,6 @@ function Form() {
       setError({
         name: false,
         contactNumber: false,
-        photo: false,
       });
 
       setPreview(null);
@@ -662,8 +683,7 @@ function Form() {
         <div className="two col-lg-12 col-md-12 col-11">
           <div className="last-input-holder input-holder col-lg-12 col-md-11">
             <label id="file-label" htmlFor="upload-file">
-              Upload Photo<sup>*</sup>
-              {error.photo && <span className="error-message">Required</span>}
+              Upload Photo
             </label>
             <input
               type="file"
@@ -679,6 +699,11 @@ function Form() {
             </div>
           </div>
         </div>
+        {(error.name || error.contactNumber) && (
+          <p className="error-message" style={{color: "red"}}>
+            Please fill the mandatory fields to submit the data.
+          </p>
+        )}
         <div className="button-holder col-lg-12 col-md-11 col-sm-10 col-10">
           <Button
             backgroundColor="blue"
