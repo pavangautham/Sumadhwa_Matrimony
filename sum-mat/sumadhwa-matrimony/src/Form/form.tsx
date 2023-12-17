@@ -74,7 +74,7 @@ function Form() {
     contactNumber: false,
   });
 
-  console.log("error",error)
+  console.log("error", error);
 
   const fileRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -89,16 +89,16 @@ function Form() {
 
   const validateFormData = () => {
     const newErrors: ErrorData = {};
-  
+
     // Check if "name" is empty
     newErrors.name = formData.name === "";
-  
+
     // Check if "contactNumber" is empty
     newErrors.contactNumber = formData.contactNumber === "";
-  
+
     // Set errors
     setError(newErrors);
-  
+
     // Return true if there are no errors, false otherwise
     return Object.values(newErrors).every((error) => !error);
   };
@@ -120,14 +120,14 @@ function Form() {
 
   const uploadPhoto = async () => {
     const file = formData.photo;
-  
+
     // Check if a file is present
     if (file) {
       try {
         // Generate a unique ID for the photo
         const ext = file.name.split(".").pop();
         const id = uuidv4();
-  
+
         // Upload the photo and get the resulting ID
         const result = await uploadData({
           key: `${id}.${ext}`,
@@ -136,9 +136,9 @@ function Form() {
             contentType: file.type,
           },
         }).result;
-  
+
         console.log("Succeeded: ", result);
-  
+
         // Return the generated URL
         const photoUrl = `https://${bucketName}.s3.${region}.amazonaws.com/public/${id}.${ext}`;
         return photoUrl;
@@ -147,11 +147,10 @@ function Form() {
         throw new Error("Failed to upload photo");
       }
     }
-  
+
     // If no file is present, return null or any other default value
     return null;
   };
-  
 
   const BOT_TOKEN = "6710721716:AAFJCkuFl94excqHHHcz7q2aKr2a85rUDqs";
   const CHAT_ID = -1002136474672;
@@ -169,38 +168,37 @@ function Form() {
     // const photoId = await uploadPhoto();
 
     try {
-
       // Check if a photo is present
-    if (formData.photo) {
-      // If photo is present, upload it and get the ID
-      photoId = await uploadPhoto();
-    }
+      if (formData.photo) {
+        // If photo is present, upload it and get the ID
+        photoId = await uploadPhoto();
+      }
 
-    const apiPayload = {
-      name: formData.name,
-      fatherName: formData.fatherName,
-      motherName: formData.motherName,
-      gotra: formData.gotra,
-      nakshatra: formData.nakshatra,
-      rashi: formData.rashi,
-      gana: formData.gana,
-      nadi: formData.nadi,
-      caste: formData.caste,
-      matha: formData.matha,
-      dob: formData.dob,
-      placeOfBirth: formData.placeOfBirth,
-      height: formData.height,
-      qualification: formData.qualification,
-      workingOrganization: formData.workingOrganization,
-      workingLocation: formData.workingLocation,
-      expectationsAboutPartner: formData.expectationsAboutPartner,
-      salary: formData.salary,
-      residence: formData.residence,
-      siblings: formData.siblings,
-      contactNumber: formData.contactNumber,
-      description: formData.description,
-      photo: photoId,
-    };
+      const apiPayload = {
+        name: formData.name,
+        fatherName: formData.fatherName,
+        motherName: formData.motherName,
+        gotra: formData.gotra,
+        nakshatra: formData.nakshatra,
+        rashi: formData.rashi,
+        gana: formData.gana,
+        nadi: formData.nadi,
+        caste: formData.caste,
+        matha: formData.matha,
+        dob: formData.dob,
+        placeOfBirth: formData.placeOfBirth,
+        height: formData.height,
+        qualification: formData.qualification,
+        workingOrganization: formData.workingOrganization,
+        workingLocation: formData.workingLocation,
+        expectationsAboutPartner: formData.expectationsAboutPartner,
+        salary: formData.salary,
+        residence: formData.residence,
+        siblings: formData.siblings,
+        contactNumber: formData.contactNumber,
+        description: formData.description,
+        photo: photoId,
+      };
 
       // Make the API request using Axios
       const response = await axios.post(
@@ -234,51 +232,57 @@ function Form() {
         expectationsAboutPartner: "Expectations About Partner",
         salary: "Salary per Annum",
         description: "Other Details",
-        residence: "Address"
+        residence: "Address",
       };
 
       // Send form data and photo to Telegram bot
       if (photoId) {
-      const telegramApiPayload = {
-        chat_id: CHAT_ID,
-        photo: photoId,
-        caption: Object.entries(formData)
-    .filter(([key, value]) => value && key !== 'photo')
-    .map(([key, value]) => `${fieldMappings[key] || key}: ${value}`)
-    .join('\n\n'),
-//         caption: `
-// Name: ${formData.name}
-// Father's Name: ${formData.fatherName}
-// Mother's Name: ${formData.motherName}
-//   `,
-      };
+        const telegramApiPayload = {
+          chat_id: CHAT_ID,
+          photo: photoId,
+          caption:
+            Object.entries(formData)
+              .filter(([key, value]) => value && key !== "photo")
+              .map(([key, value]) => `${fieldMappings[key] || key}: ${value}`)
+              .join("\n\n") +
+            "\n\n" +
+            "######################\nSumadhwa Matrimony - For joining call 7975950334 / 9042729165",
+          //         caption: `
+          // Name: ${formData.name}
+          // Father's Name: ${formData.fatherName}
+          // Mother's Name: ${formData.motherName}
+          //   `,
+        };
 
-      const telegramApiResponse = await axios.post(
-        `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,
-        telegramApiPayload
-      );
+        const telegramApiResponse = await axios.post(
+          `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`,
+          telegramApiPayload
+        );
 
-      console.log("Telegram API Response:", telegramApiResponse.data);
+        console.log("Telegram API Response:", telegramApiResponse.data);
       } else {
         // If no photo, use sendMessage API
-      const telegramApiPayload = {
-        chat_id: CHAT_ID,
-        text: Object.entries(formData)
-          .filter(([key, value]) => value && key !== 'photo')
-          .map(([key, value]) => `${fieldMappings[key] || key}: ${value}`)
-          .join('\n\n'),
-      };
+        const telegramApiPayload = {
+          chat_id: CHAT_ID,
+          text:
+            Object.entries(formData)
+              .filter(([key, value]) => value && key !== "photo")
+              .map(([key, value]) => `${fieldMappings[key] || key}: ${value}`)
+              .join("\n\n") +
+            "\n\n" +
+            "######################\nSumadhwa Matrimony - For joining call 7975950334 / 9042729165",
+        };
 
-      const telegramApiResponse = await axios.post(
-        `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
-        telegramApiPayload
-      );
-      console.log("Telegram API Response:", telegramApiResponse.data);
+        const telegramApiResponse = await axios.post(
+          `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
+          telegramApiPayload
+        );
+        console.log("Telegram API Response:", telegramApiResponse.data);
       }
 
       Swal.fire({
         title: "Success!!",
-        text: "Successfully Submitted",
+        text: "Successfully Registered to Sumadhwa Matrimony",
         icon: "success",
         confirmButtonText: "OK",
       });
@@ -649,10 +653,7 @@ function Form() {
         </div>
         <div className="two col-lg-12 col-md-12 col-11">
           <div className="input-holder col-lg-12 col-md-11">
-            <label
-              id="description-label"
-              htmlFor="description"
-            >
+            <label id="description-label" htmlFor="description">
               Other Details
             </label>
             <textarea
@@ -700,7 +701,7 @@ function Form() {
           </div>
         </div>
         {(error.name || error.contactNumber) && (
-          <p className="error-message" style={{color: "red"}}>
+          <p className="error-message" style={{ color: "red" }}>
             Please fill the mandatory fields to submit the data.
           </p>
         )}
