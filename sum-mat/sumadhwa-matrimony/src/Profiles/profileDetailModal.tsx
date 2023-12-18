@@ -8,6 +8,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import LoaderComponent from "../Components/loader";
 import { v4 as uuidv4 } from "uuid";
+import { Profile } from "./userCard";
 
 interface OveylayProps {
   $isOpen: boolean;
@@ -373,13 +374,15 @@ export const InputHolder = styled.div`
 interface ProfileDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
-  profileId: string;
+  // profileId: string;
+  profile: Profile;
 }
 
 function ProfileDetailModal({
   isOpen,
   onClose,
-  profileId,
+  // profileId,
+  profile
 }: ProfileDetailModalProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [profileDetail, setProfileDetail] = useState<IFormData>();
@@ -388,7 +391,7 @@ function ProfileDetailModal({
   const [preview, setPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState<IFormData>({
     name: "",
-    id: profileId ? profileId : "",
+    id: profile?.id ? profile?.id : "",
     fatherName: "",
     motherName: "",
     gotra: "",
@@ -419,7 +422,7 @@ function ProfileDetailModal({
     const fetchProfiles = async () => {
       try {
         const response = await fetch(
-          `https://51kxoxxpf4.execute-api.ap-south-1.amazonaws.com/Stage/get-profile?id=${profileId}`
+          `https://51kxoxxpf4.execute-api.ap-south-1.amazonaws.com/Stage/get-profile?id=${profile?.id}`
         );
         const data = await response.json();
         setProfileDetail(data.data || []);
@@ -430,7 +433,7 @@ function ProfileDetailModal({
     };
 
     fetchProfiles();
-  }, [profileId]);
+  }, [profile?.id]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -456,14 +459,14 @@ function ProfileDetailModal({
 
   const uploadPhoto = async () => {
     const file = formData.photo;
-
+  
     // Check if a file is present
     if (file) {
       try {
         // Generate a unique ID for the photo
-        const ext = file.name.split(".").pop();
+        const ext = file.name ? file.name.split(".").pop() : ""; // Check if file.name is defined
         const id = uuidv4();
-
+  
         // Upload the photo and get the resulting ID
         const result = await uploadData({
           key: `${id}.${ext}`,
@@ -472,9 +475,9 @@ function ProfileDetailModal({
             contentType: file.type,
           },
         }).result;
-
+  
         console.log("Succeeded: ", result);
-
+  
         // Return the generated URL
         const photoUrl = `https://${bucketName}.s3.${region}.amazonaws.com/public/${id}.${ext}`;
         return photoUrl;
@@ -483,10 +486,11 @@ function ProfileDetailModal({
         throw new Error("Failed to upload photo");
       }
     }
-
+  
     // If no file is present, return null or any other default value
     return null;
   };
+  
 
   const handleSaveClick = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -502,7 +506,7 @@ function ProfileDetailModal({
 
       const apiPayload = {
         name: formData.name,
-        id: profileId,
+        id: profile?.id,
         fatherName: formData.fatherName,
         motherName: formData.motherName,
         gotra: formData.gotra,

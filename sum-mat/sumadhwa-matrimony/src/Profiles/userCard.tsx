@@ -134,7 +134,7 @@ const SendMessage = styled.button`
   }
 `;
 
-interface Profile {
+export interface Profile {
   id: string;
   name: string;
   photo: string;
@@ -306,7 +306,8 @@ const UserCard: React.FC<{ profile: Profile }> = ({ profile }) => {
         </ButtonsWrapper>
       </UserCardWrapper>
       <ProfileDetailModal
-        profileId={profile.id}
+        // profileId={profile.id}
+        profile={profile}
         isOpen={isModalOpen}
         onClose={closeModal}
       />
