@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 
 export interface IFormData {
   name: string;
+  gender: string;
   fatherName: string;
   motherName: string;
   gotra: string;
@@ -19,19 +20,23 @@ export interface IFormData {
   caste: string;
   matha: string;
   dob: string;
+  age: string;
   placeOfBirth: string;
   height: string;
   qualification: string;
   workingOrganization: string;
+  isAbroadWorking: boolean;
   workingLocation: string;
   expectationsAboutPartner: string;
   salary: string;
   siblings: string;
   contactNumber: string;
+  isDivorced: boolean;
+  divorceDetails: string;
   residence: string;
   description: string;
   photo: File | null;
-  [key: string]: string | File | null;
+  [key: string]: string | File | null | boolean;
 }
 
 interface ErrorData {
@@ -41,6 +46,7 @@ interface ErrorData {
 function Form() {
   const [formData, setFormData] = useState<IFormData>({
     name: "",
+    gender: "",
     fatherName: "",
     motherName: "",
     gotra: "",
@@ -50,36 +56,39 @@ function Form() {
     nadi: "",
     caste: "",
     dob: "",
+    age: "",
     matha: "",
     placeOfBirth: "",
     height: "",
     qualification: "",
     workingOrganization: "",
+    isAbroadWorking: false,
     workingLocation: "",
     expectationsAboutPartner: "",
     salary: "",
     siblings: "",
     contactNumber: "",
-    alternativePhone: "",
+    isDivorced: false,
+    divorceDetails: "",
     description: "",
     residence: "",
     photo: null,
-    photo2: null,
   });
+  console.log("formData", formData);
 
   const [error, setError] = useState<ErrorData>({
     name: false,
     contactNumber: false,
   });
 
-  console.log("error", error);
-
   const fileRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -151,6 +160,7 @@ function Form() {
   };
 
   const BOT_TOKEN = "6710721716:AAFJCkuFl94excqHHHcz7q2aKr2a85rUDqs";
+  // const CHAT_ID = 822389037;
   const CHAT_ID = -1002136474672;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -174,6 +184,7 @@ function Form() {
 
       const apiPayload = {
         name: formData.name,
+        gender: formData.gender,
         fatherName: formData.fatherName,
         motherName: formData.motherName,
         gotra: formData.gotra,
@@ -184,16 +195,20 @@ function Form() {
         caste: formData.caste,
         matha: formData.matha,
         dob: formData.dob,
+        age: formData.age,
         placeOfBirth: formData.placeOfBirth,
         height: formData.height,
         qualification: formData.qualification,
         workingOrganization: formData.workingOrganization,
+        isAbroadWorking: formData.isAbroadWorking,
         workingLocation: formData.workingLocation,
         expectationsAboutPartner: formData.expectationsAboutPartner,
         salary: formData.salary,
         residence: formData.residence,
         siblings: formData.siblings,
         contactNumber: formData.contactNumber,
+        isDivorced: formData.isDivorced,
+        divorceDetails: formData.isDivorced ? formData.divorceDetails : null,
         description: formData.description,
         photo: photoId,
       };
@@ -206,7 +221,6 @@ function Form() {
 
       // // Handle the API response as needed
       console.log("API Response:", response.data);
-      // console.log("API Response:", apiPayload);
 
       const fieldMappings: Record<keyof IFormData, string> = {
         name: "Name",
@@ -220,15 +234,19 @@ function Form() {
         caste: "Caste",
         matha: "Mata(ಮಠ)",
         dob: "Date of Birth & Time",
+        age: "Age",
         placeOfBirth: "Place of Birth",
         height: "Height",
         qualification: "Qualification",
         contactNumber: "Contact Number",
         siblings: "Siblings",
         workingOrganization: "Working Organization",
+        isAbroadWorking: "Working in Abroad",
         workingLocation: "Working Location",
-        expectationsAboutPartner: "Expectations About Partner",
         salary: "Salary per Annum",
+        expectationsAboutPartner: "Expectations About Partner",
+        isDivorced: "Divorced / Widow",
+        divorceDetails: "Divorced / Widow Details",
         description: "Other Details",
         residence: "Address",
       };
@@ -239,12 +257,24 @@ function Form() {
           chat_id: CHAT_ID,
           photo: photoId,
           caption:
-            Object.entries(formData)
-              .filter(([key, value]) => value && key !== "photo")
-              .map(([key, value]) => `${fieldMappings[key] || key}: ${value}`)
-              .join("\n\n") +
-            "\n\n" +
-            "######################\nSumadhwa Matrimony - For joining call 7975950334 / 9042729165",
+          Object.keys(fieldMappings)
+          .filter((key) => {
+            if (key === "isAbroadWorking" || key === "isDivorced") {
+              // Include only when the value is not undefined and true
+              return formData[key] !== undefined && formData[key] !== false;
+            }
+            return formData[key] !== undefined && key !== "photo";
+          })
+          .map((key) => {
+            if (key === "isAbroadWorking" || key === "isDivorced") {
+              // Map isAbroadWorking and isDivorced to "Yes" or "No"
+              return `${fieldMappings[key]}: ${formData[key] ? "Yes" : "No"}`;
+            }
+            return `${fieldMappings[key]}: ${formData[key]}`;
+          })
+          .join("\n\n") +
+        "\n\n" +
+        "######################\nSumadhwa Matrimony - For joining call 7975950334 / 9042729165",
           //         caption: `
           // Name: ${formData.name}
           // Father's Name: ${formData.fatherName}
@@ -263,12 +293,24 @@ function Form() {
         const telegramApiPayload = {
           chat_id: CHAT_ID,
           text:
-            Object.entries(formData)
-              .filter(([key, value]) => value && key !== "photo")
-              .map(([key, value]) => `${fieldMappings[key] || key}: ${value}`)
-              .join("\n\n") +
-            "\n\n" +
-            "######################\nSumadhwa Matrimony - For joining call 7975950334 / 9042729165",
+          Object.keys(fieldMappings)
+          .filter((key) => {
+            if (key === "isAbroadWorking" || key === "isDivorced") {
+              // Include only when the value is not undefined and true
+              return formData[key] !== undefined && formData[key] !== false;
+            }
+            return formData[key] !== undefined && key !== "photo";
+          })
+          .map((key) => {
+            if (key === "isAbroadWorking" || key === "isDivorced") {
+              // Map isAbroadWorking and isDivorced to "Yes" or "No"
+              return `${fieldMappings[key]}: ${formData[key] ? "Yes" : "No"}`;
+            }
+            return `${fieldMappings[key]}: ${formData[key]}`;
+          })
+          .join("\n\n") +
+        "\n\n" +
+        "######################\nSumadhwa Matrimony - For joining call 7975950334 / 9042729165",
         };
 
         const telegramApiResponse = await axios.post(
@@ -288,6 +330,7 @@ function Form() {
       // Reset the form and errors after successful submission
       setFormData({
         name: "",
+        gender: "",
         fatherName: "",
         motherName: "",
         gotra: "",
@@ -296,22 +339,24 @@ function Form() {
         gana: "",
         nadi: "",
         caste: "",
-        dob: "",
         matha: "",
+        dob: "",
+        age: "",
         placeOfBirth: "",
         height: "",
         qualification: "",
         workingOrganization: "",
+        isAbroadWorking: false,
         workingLocation: "",
         expectationsAboutPartner: "",
         salary: "",
         siblings: "",
         contactNumber: "",
-        alternativePhone: "",
+        isDivorced: false,
+        divorceDetails: "",
         description: "",
         residence: "",
         photo: null,
-        photo2: null,
       });
 
       // Clear the file input
@@ -374,6 +419,24 @@ function Form() {
             />
           </div>
           <div className="input-holder col-lg-6">
+            <label id="gender-label" htmlFor="gender">
+              Gender
+            </label>
+            <select
+              style={{ width: "130px", background: "#ebfbffe6" }}
+              name="gender"
+              value={formData.gender}
+              id="gender"
+              onChange={handleChange}
+            >
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+        </div>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
             <label id="fatherName-label" htmlFor="fatherName">
               Father&apos;s Name
             </label>
@@ -386,8 +449,6 @@ function Form() {
               onChange={handleChange}
             />
           </div>
-        </div>
-        <div className="two col-lg-12 col-11">
           <div className="input-holder col-lg-6">
             <label id="motherName-label" htmlFor="motherName">
               Mother&apos;s Name
@@ -401,6 +462,8 @@ function Form() {
               onChange={handleChange}
             />
           </div>
+        </div>
+        <div className="two col-lg-12 col-11">
           <div className="input-holder col-lg-6">
             <label id="gotra-label" htmlFor="gotra">
               Gotra
@@ -529,6 +592,21 @@ function Form() {
         </div>
         <div className="two col-lg-12 col-11">
           <div className="input-holder col-lg-6">
+            <label id="age-label" htmlFor="age">
+              Age
+            </label>
+            <input
+              type="text"
+              name="age"
+              value={formData.age}
+              id="age"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
             <label id="height-label" htmlFor="height">
               Height
             </label>
@@ -556,7 +634,7 @@ function Form() {
           </div>
         </div>
         <div className="two col-lg-12 col-11">
-          <div className="input-holder col-lg-6">
+          <div className="input-holder col-lg-12">
             <label id="workingOrganization-label" htmlFor="workingOrganization">
               Working Organisation
             </label>
@@ -568,6 +646,28 @@ function Form() {
               autoComplete="off"
               onChange={handleChange}
             />
+          </div>
+        </div>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
+            <label id="isAbroadWorking-label" htmlFor="isAbroadWorking">
+              Working in Abroad?
+            </label>
+            <select
+              style={{ width: "130px", background: "#ebfbffe6" }}
+              name="isAbroadWorking"
+              value={formData.isAbroadWorking ? "yes" : "no"}
+              id="isAbroadWorking"
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  isAbroadWorking: e.target.value === "yes",
+                })
+              }
+            >
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
           </div>
           <div className="input-holder col-lg-6">
             <label id="workingLocation-label" htmlFor="workingLocation">
@@ -583,6 +683,7 @@ function Form() {
             />
           </div>
         </div>
+
         <div className="two col-lg-12 col-11">
           <div className="input-holder col-lg-6">
             <label id="salary-label" htmlFor="salary">
@@ -631,6 +732,44 @@ function Form() {
             />
           </div>
         </div>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
+            <label id="isDivorced-label" htmlFor="isDivorced">
+              Divorced/Widow?
+            </label>
+            <select
+              style={{ width: "130px", background: "#ebfbffe6" }}
+              name="isDivorced"
+              value={formData.isDivorced ? "yes" : "no"}
+              id="isDivorced"
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  isDivorced: e.target.value === "yes",
+                })
+              }
+            >
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          {formData.isDivorced && (
+            <div className="input-holder col-lg-6">
+              <label id="divorceDetails-label" htmlFor="divorceDetails">
+                Divorced/Widow Details
+              </label>
+              <input
+                type="text"
+                name="divorceDetails"
+                value={formData.divorceDetails}
+                id="divorceDetails"
+                autoComplete="off"
+                onChange={handleChange}
+              />
+            </div>
+          )}
+        </div>
+
         <div className="two col-lg-12 col-md-12 col-11">
           <div className="input-holder col-lg-12 col-md-11">
             <label

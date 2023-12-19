@@ -137,6 +137,7 @@ const SendMessage = styled.button`
 export interface Profile {
   id: string
   name: string;
+  gender: string;
   fatherName: string;
   motherName: string;
   gotra: string;
@@ -147,19 +148,23 @@ export interface Profile {
   caste: string;
   matha: string;
   dob: string;
+  age: string;
   placeOfBirth: string;
   height: string;
   qualification: string;
   workingOrganization: string;
+  isAbroadWorking: boolean;
   workingLocation: string;
   expectationsAboutPartner: string;
   salary: string;
   siblings: string;
   contactNumber: string;
+  isDivorced: boolean;
+  divorceDetails: string;
   residence: string;
   description: string;
   photo: string;
-  [key: string]: string | File | null;
+  [key: string]: string | File | null | boolean;
 }
 
 const UserCard: React.FC<{ profile: Profile }> = ({ profile }) => {
@@ -220,15 +225,19 @@ const UserCard: React.FC<{ profile: Profile }> = ({ profile }) => {
       caste: "Caste",
       matha: "Mata(ಮಠ)",
       dob: "Date of Birth & Time",
+      age: "Age",
       placeOfBirth: "Place of Birth",
       height: "Height",
       qualification: "Qualification",
       contactNumber: "Contact Number",
       siblings: "Siblings",
       workingOrganization: "Working Organization",
+      isAbroadWorking: "Working in Abroad",
       workingLocation: "Working Location",
-      expectationsAboutPartner: "Expectations About Partner",
       salary: "Salary per Annum",
+      isDivorced: "Divorced / Widow",
+      divorceDetails: "Divorced / Widow Details",
+      expectationsAboutPartner: "Expectations About Partner",
       description: "Other Details",
       residence: "Address",
     };
@@ -236,13 +245,22 @@ const UserCard: React.FC<{ profile: Profile }> = ({ profile }) => {
     const commonPayload = {
       chat_id: CHAT_ID,
       text:
-        fieldMappingsOrder
-          .map((key) => ({ key, value: profile[key as keyof Profile] }))
-          .filter(({ value }) => value)
-          .map(({ key, value }) => `${fieldMappings[key] || key}: ${value}`)
-          .join("\n\n") +
-        "\n\n" +
-        "######################\nSumadhwa Matrimony - For joining call 7975950334 / 9042729165",
+      fieldMappingsOrder
+        .map((key) => ({ key, value: profile[key as keyof Profile] }))
+        .filter(({ value }) => value !== undefined && value !== null && value !== "")
+        .map(({ key, value }) => {
+          if (key === "isAbroadWorking" || key === "isDivorced") {
+            return value ? `${fieldMappings[key]}: Yes` : "No";
+          } else if (key === "divorceDetails" && !profile.isDivorced) {
+            return null; // Do not include divorceDetails if isDivorced is false
+          } else {
+            return `${fieldMappings[key] || key}: ${value}`;
+          }
+        })
+        .filter(Boolean)
+        .join("\n\n") +
+      "\n\n" +
+      "######################\nSumadhwa Matrimony - For joining call 7975950334 / 9042729165",
     };
 
     if (profile.photo) {

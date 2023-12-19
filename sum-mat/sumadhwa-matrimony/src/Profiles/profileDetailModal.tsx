@@ -396,6 +396,7 @@ function ProfileDetailModal({
   const [preview, setPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState<IFormData>({
     name: "",
+    gender: "",
     id: profile?.id ? profile?.id : "",
     fatherName: "",
     motherName: "",
@@ -407,15 +408,19 @@ function ProfileDetailModal({
     caste: "",
     matha: "",
     dob: "",
+    age: "",
     placeOfBirth: "",
     height: "",
     qualification: "",
     workingOrganization: "",
+    isAbroadWorking: false,
     workingLocation: "",
     expectationsAboutPartner: "",
     salary: "",
     siblings: "",
     contactNumber: "",
+    isDivorced: false,
+    divorceDetails: "",
     description: "",
     residence: "",
     photo: null,
@@ -1003,6 +1008,12 @@ function ProfileDetailModal({
                   {profileDetail?.dob}
                 </DetailsSpan>
               )}
+              {profileDetail?.age && (
+                <DetailsSpan>
+                  <strong>Age: </strong>
+                  {profileDetail?.age}
+                </DetailsSpan>
+              )}
               {profileDetail?.placeOfBirth && (
                 <DetailsSpan>
                   <strong>Place of Birth: </strong>
@@ -1020,17 +1031,17 @@ function ProfileDetailModal({
                   <strong>Qualification: </strong>
                   {profileDetail?.qualification}
                 </DetailsSpan>
-              )}
-              {profileDetail?.description && (
-                <DetailsSpan>
-                  <strong>Other Details: </strong>
-                  {profileDetail?.description}
-                </DetailsSpan>
-              )}
+              )}              
               {profileDetail?.workingOrganization && (
                 <DetailsSpan>
                   <strong>Working Organisation: </strong>
                   {profileDetail?.workingOrganization}
+                </DetailsSpan>
+              )}
+              {profileDetail?.isAbroadWorking && (
+                <DetailsSpan>
+                  <strong>Working in Abroad: </strong>
+                  {profileDetail?.isAbroadWorking ? "Yes" : "No"}
                 </DetailsSpan>
               )}
               {profileDetail?.workingLocation && (
@@ -1061,6 +1072,18 @@ function ProfileDetailModal({
                 <DetailsSpan>
                   <strong>Expectations about Groom/Bride: </strong>
                   {profileDetail?.expectationsAboutPartner}
+                </DetailsSpan>
+              )}
+              {profileDetail?.isDivorced && (
+                <DetailsSpan>
+                  <strong>Divorced/Widow Details: </strong>
+                  {profileDetail?.divorceDetails}
+                </DetailsSpan>
+              )}
+              {profileDetail?.description && (
+                <DetailsSpan>
+                  <strong>Other Details: </strong>
+                  {profileDetail?.description}
                 </DetailsSpan>
               )}
               {profileDetail?.residence && (
