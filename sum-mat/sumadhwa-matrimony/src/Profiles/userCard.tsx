@@ -135,10 +135,31 @@ const SendMessage = styled.button`
 `;
 
 export interface Profile {
-  id: string;
+  id: string
   name: string;
-  photo: string;
+  fatherName: string;
+  motherName: string;
+  gotra: string;
+  nakshatra: string;
+  rashi: string;
+  gana: string;
+  nadi: string;
+  caste: string;
+  matha: string;
+  dob: string;
+  placeOfBirth: string;
+  height: string;
+  qualification: string;
+  workingOrganization: string;
+  workingLocation: string;
+  expectationsAboutPartner: string;
+  salary: string;
+  siblings: string;
   contactNumber: string;
+  residence: string;
+  description: string;
+  photo: string;
+  [key: string]: string | File | null;
 }
 
 const UserCard: React.FC<{ profile: Profile }> = ({ profile }) => {
@@ -154,6 +175,7 @@ const UserCard: React.FC<{ profile: Profile }> = ({ profile }) => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    location.reload();
   };
 
   const BOT_TOKEN = "6710721716:AAFJCkuFl94excqHHHcz7q2aKr2a85rUDqs";
@@ -196,7 +218,7 @@ const UserCard: React.FC<{ profile: Profile }> = ({ profile }) => {
       gana: "Gana",
       nadi: "Nadi",
       caste: "Caste",
-      matha: "MaTa",
+      matha: "Mata(ಮಠ)",
       dob: "Date of Birth & Time",
       placeOfBirth: "Place of Birth",
       height: "Height",

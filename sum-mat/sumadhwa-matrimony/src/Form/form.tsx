@@ -17,8 +17,8 @@ export interface IFormData {
   gana: string;
   nadi: string;
   caste: string;
-  dob: string;
   matha: string;
+  dob: string;
   placeOfBirth: string;
   height: string;
   qualification: string;
@@ -28,11 +28,9 @@ export interface IFormData {
   salary: string;
   siblings: string;
   contactNumber: string;
-  alternativePhone: string;
   residence: string;
   description: string;
   photo: File | null;
-  photo2: File | null;
   [key: string]: string | File | null;
 }
 
@@ -220,7 +218,7 @@ function Form() {
         gana: "Gana",
         nadi: "Nadi",
         caste: "Caste",
-        matha: "MaTa",
+        matha: "Mata(ಮಠ)",
         dob: "Date of Birth & Time",
         placeOfBirth: "Place of Birth",
         height: "Height",
@@ -489,7 +487,7 @@ function Form() {
           </div>
           <div className="input-holder col-lg-6">
             <label id="matha-label" htmlFor="matha">
-              MaTa
+              Mata(ಮಠ)
             </label>
             <input
               type="text"

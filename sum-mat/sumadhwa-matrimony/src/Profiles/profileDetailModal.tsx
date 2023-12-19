@@ -211,6 +211,11 @@ export const ViewUserPhoto = styled.div`
   }
 `;
 
+export const UpdateProfile = styled.div`
+  display: block;
+  margin-top: 15px;
+`;
+
 export const ViewUserDetails = styled.div`
   width: 60%;
   @media (width >= 320px) and (width <= 768px) {
@@ -382,7 +387,7 @@ function ProfileDetailModal({
   isOpen,
   onClose,
   // profileId,
-  profile
+  profile,
 }: ProfileDetailModalProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [profileDetail, setProfileDetail] = useState<IFormData>();
@@ -400,8 +405,8 @@ function ProfileDetailModal({
     gana: "",
     nadi: "",
     caste: "",
-    dob: "",
     matha: "",
+    dob: "",
     placeOfBirth: "",
     height: "",
     qualification: "",
@@ -411,11 +416,9 @@ function ProfileDetailModal({
     salary: "",
     siblings: "",
     contactNumber: "",
-    alternativePhone: "",
     description: "",
     residence: "",
     photo: null,
-    photo2: null,
   });
 
   useEffect(() => {
@@ -459,14 +462,14 @@ function ProfileDetailModal({
 
   const uploadPhoto = async () => {
     const file = formData.photo;
-  
+
     // Check if a file is present
     if (file) {
       try {
         // Generate a unique ID for the photo
         const ext = file.name ? file.name.split(".").pop() : ""; // Check if file.name is defined
         const id = uuidv4();
-  
+
         // Upload the photo and get the resulting ID
         const result = await uploadData({
           key: `${id}.${ext}`,
@@ -475,9 +478,9 @@ function ProfileDetailModal({
             contentType: file.type,
           },
         }).result;
-  
+
         console.log("Succeeded: ", result);
-  
+
         // Return the generated URL
         const photoUrl = `https://${bucketName}.s3.${region}.amazonaws.com/public/${id}.${ext}`;
         return photoUrl;
@@ -486,27 +489,94 @@ function ProfileDetailModal({
         throw new Error("Failed to upload photo");
       }
     }
-  
+
     // If no file is present, return null or any other default value
     return null;
   };
+
+  const updatePhotoSubmit = async () => {
+    try {
+      setIsLoading(true);
   
+      // Upload the new photo
+      const photoUrl = await uploadPhoto();
+      
+      // Update the profile data with the new photo URL
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      setProfileDetail((prevProfile) => ({
+        ...prevProfile,
+        photo: photoUrl,
+      }));
+
+      const apiPayload = {
+        id: profile?.id,
+        photo: photoUrl,
+        name: profile?.name,
+        fatherName: profile?.fatherName,
+        motherName: profile?.motherName,
+        gotra: profile?.gotra,
+        nakshatra: profile?.nakshatra,
+        rashi: profile?.rashi,
+        gana: profile?.gana,
+        nadi: profile?.nadi,
+        caste: profile?.caste,
+        matha: profile?.matha,
+        dob: profile?.dob,
+        placeOfBirth: profile?.placeOfBirth,
+        height: profile?.height,
+        qualification: profile?.qualification,
+        workingOrganization: profile?.workingOrganization,
+        workingLocation: profile?.workingLocation,
+        expectationsAboutPartner: profile?.expectationsAboutPartner,
+        salary: profile?.salary,
+        residence: profile?.residence,
+        siblings: profile?.siblings,
+        contactNumber: profile?.contactNumber,
+        description: profile?.description,
+      };
+
+      const response = await axios.post(
+        "https://51kxoxxpf4.execute-api.ap-south-1.amazonaws.com/Stage/add-profile",
+        apiPayload
+      );
+        
+      console.log("updated photo response", response.data);
+      // Display a success message
+      Swal.fire({
+        title: "Success!!",
+        text: "Photo updated successfully",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+
+      // Clear the file input
+      if (fileRef.current) {
+        fileRef.current.value = "";
+      }
+    } catch (error) {
+      // Display an error message
+      Swal.fire({
+        title: "Error!!",
+        text: "Failed to update photo",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };  
 
   const handleSaveClick = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    let photoId = null;
 
     try {
-      // Check if a photo is present
-      if (formData.photo) {
-        // If photo is present, upload it and get the ID
-        photoId = await uploadPhoto();
-      }
 
-      const apiPayload = {
-        name: formData.name,
+      const updatedProfile = {
+        ...profileDetail,
         id: profile?.id,
+        name: formData.name,
         fatherName: formData.fatherName,
         motherName: formData.motherName,
         gotra: formData.gotra,
@@ -528,12 +598,17 @@ function ProfileDetailModal({
         siblings: formData.siblings,
         contactNumber: formData.contactNumber,
         description: formData.description,
-        photo: photoId,
+        photo: profile?.photo,
       };
+
+      // Update the profile data in the state
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+    setProfileDetail(updatedProfile);
 
       const response = await axios.post(
         "https://51kxoxxpf4.execute-api.ap-south-1.amazonaws.com/Stage/add-profile",
-        apiPayload
+        updatedProfile
       );
       console.log("updated response", response.data);
       setIsLoading(false);
@@ -543,6 +618,7 @@ function ProfileDetailModal({
         icon: "success",
         confirmButtonText: "OK",
       });
+      setIsEditing(false);
     } catch (error) {
       Swal.fire({
         title: "Error!!",
@@ -802,22 +878,6 @@ function ProfileDetailModal({
                   autoComplete="off"
                 />
               </InputHolder>
-              <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="photo">Change Photo:</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={fileRef}
-                  name="photo"
-                  autoComplete="off"
-                  onChange={handleFileChange}
-                />
-              </InputHolder>
-              {preview && (
-                <div className="preview-holder">
-                  <img src={preview} alt="Preview" />
-                </div>
-              )}
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
@@ -855,10 +915,26 @@ function ProfileDetailModal({
         ) : (
           <ViewDetails>
             <ViewUserPhoto>
-              <img
-                src={profileDetail?.photo as unknown as string}
-                alt={profileDetail?.name}
+              {preview ? (
+                <div className="preview-holder">
+                  <img src={preview} alt="Preview" />
+                </div>
+              ) : (
+                <img
+                  src={profileDetail?.photo as unknown as string}
+                  alt={profileDetail?.name}
+                />
+              )}
+              <UpdateProfile>Update Photo</UpdateProfile>
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileRef}
+                name="photo"
+                autoComplete="off"
+                onChange={handleFileChange}
               />
+              {fileRef.current && <SaveButton onClick={updatePhotoSubmit}>Update {isLoading && <LoaderComponent />}</SaveButton>}
             </ViewUserPhoto>
             <ViewUserDetails>
               {profileDetail?.name && (
