@@ -258,23 +258,30 @@ function Form() {
           photo: photoId,
           caption:
           Object.keys(fieldMappings)
-          .filter((key) => {
-            if (key === "isAbroadWorking" || key === "isDivorced") {
-              // Include only when the value is not undefined and true
-              return formData[key] !== undefined && formData[key] !== false;
-            }
-            return formData[key] !== undefined && key !== "photo";
-          })
-          .map((key) => {
-            if (key === "isAbroadWorking" || key === "isDivorced") {
-              // Map isAbroadWorking and isDivorced to "Yes" or "No"
-              return `${fieldMappings[key]}: ${formData[key] ? "Yes" : "No"}`;
-            }
-            return `${fieldMappings[key]}: ${formData[key]}`;
-          })
-          .join("\n\n") +
-        "\n\n" +
-        "######################\nSumadhwa Matrimony - For joining call 7975950334 / 9042729165",
+      .filter((key) => {
+        const value = formData[key];
+
+        // Skip if the value is undefined, null, or an empty string
+        if (value === undefined || value === null || value === "") {
+          return false;
+        }
+
+        // Include only when the value is not undefined and true
+        return key === "isAbroadWorking" || key === "isDivorced"
+          ? value !== undefined && value !== false
+          : true;
+      })
+      .map((key) => {
+        if (key === "isAbroadWorking" || key === "isDivorced") {
+          // Map isAbroadWorking and isDivorced to "Yes" or "No"
+          return `${fieldMappings[key]}: ${formData[key] ? "Yes" : "No"}`;
+        } else {
+          return `${fieldMappings[key]}: ${formData[key]}`;
+        }
+      })
+      .join("\n\n") +
+    "\n\n" +
+    "######################\nSumadhwa Matrimony - For joining call 7975950334 / 9042729165",
           //         caption: `
           // Name: ${formData.name}
           // Father's Name: ${formData.fatherName}
@@ -294,23 +301,30 @@ function Form() {
           chat_id: CHAT_ID,
           text:
           Object.keys(fieldMappings)
-          .filter((key) => {
-            if (key === "isAbroadWorking" || key === "isDivorced") {
-              // Include only when the value is not undefined and true
-              return formData[key] !== undefined && formData[key] !== false;
-            }
-            return formData[key] !== undefined && key !== "photo";
-          })
-          .map((key) => {
-            if (key === "isAbroadWorking" || key === "isDivorced") {
-              // Map isAbroadWorking and isDivorced to "Yes" or "No"
-              return `${fieldMappings[key]}: ${formData[key] ? "Yes" : "No"}`;
-            }
-            return `${fieldMappings[key]}: ${formData[key]}`;
-          })
-          .join("\n\n") +
-        "\n\n" +
-        "######################\nSumadhwa Matrimony - For joining call 7975950334 / 9042729165",
+      .filter((key) => {
+        const value = formData[key];
+
+        // Skip if the value is undefined, null, or an empty string
+        if (value === undefined || value === null || value === "") {
+          return false;
+        }
+
+        // Include only when the value is not undefined and true
+        return key === "isAbroadWorking" || key === "isDivorced"
+          ? value !== undefined && value !== false
+          : true;
+      })
+      .map((key) => {
+        if (key === "isAbroadWorking" || key === "isDivorced") {
+          // Map isAbroadWorking and isDivorced to "Yes" or "No"
+          return `${fieldMappings[key]}: ${formData[key] ? "Yes" : "No"}`;
+        } else {
+          return `${fieldMappings[key]}: ${formData[key]}`;
+        }
+      })
+      .join("\n\n") +
+    "\n\n" +
+    "######################\nSumadhwa Matrimony - For joining call 7975950334 / 9042729165",
         };
 
         const telegramApiResponse = await axios.post(
@@ -791,7 +805,7 @@ function Form() {
         <div className="two col-lg-12 col-md-12 col-11">
           <div className="input-holder col-lg-12 col-md-11">
             <label id="description-label" htmlFor="description">
-              Other Details
+              Other Details (optional)
             </label>
             <textarea
               name="description"
@@ -806,7 +820,7 @@ function Form() {
         <div className="two col-lg-12 col-md-12 col-11">
           <div className="input-holder col-lg-12 col-md-11">
             <label id="residence-label" htmlFor="residence">
-              Address
+              Address (optional)
             </label>
             <textarea
               name="residence"
