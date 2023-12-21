@@ -88,7 +88,7 @@ function Form() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [timeOfBirth, setTimeOfBirth] = useState<Date | null>(new Date());
+  const [timeOfBirth, setTimeOfBirth] = useState<Date | null>(null);
 
   const handleDateChange = (date: Date | null) => {
     // Update the date in the formData

@@ -8,7 +8,7 @@ interface CustomDatePickerProps {
   }
 
 const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ onDateChange }) => {
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
+    const [startDate, setStartDate] = useState<Date | null>(null);
   const currentYear = getYear(new Date());
   const years = Array.from(
     { length: currentYear - 1959 },

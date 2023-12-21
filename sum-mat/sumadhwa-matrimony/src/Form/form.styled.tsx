@@ -259,9 +259,12 @@ export const StyledForm = styled.form`
     width: 100%;
   }
   .react-datepicker--time-only{
-    width: 200px;
+    width: 150px;
   }
   .react-datepicker-popper {
     z-index: 99999;
+  }
+  .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list {
+    font-size: large;
   }
 `;
