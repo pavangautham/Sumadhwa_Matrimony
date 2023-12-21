@@ -196,8 +196,8 @@ function Form() {
   };
 
   const BOT_TOKEN = "6710721716:AAFJCkuFl94excqHHHcz7q2aKr2a85rUDqs";
-  const CHAT_ID = 822389037;
-  // const CHAT_ID = -1002136474672;
+  // const CHAT_ID = 822389037;
+  const CHAT_ID = -1002136474672;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

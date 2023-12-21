@@ -134,6 +134,7 @@ const SaveButton = styled.button`
     padding: 5px 10px;
     transition: all 0.3s ease;
     letter-spacing: 0.7px;
+    margin-top: 10px;
 
     &:hover,
     &:focus {
@@ -211,8 +212,8 @@ export const ViewUserPhoto = styled.div`
   }
 `;
 
-export const UpdateProfile = styled.div`
-  display: block;
+export const UpdateProfilePhoto = styled.div`
+  display: contents;
   margin-top: 15px;
 `;
 
@@ -426,6 +427,7 @@ function ProfileDetailModal({
     residence: "",
     photo: null,
   });
+  console.log("formData", formData);
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -503,10 +505,10 @@ function ProfileDetailModal({
   const updatePhotoSubmit = async () => {
     try {
       setIsLoading(true);
-  
+
       // Upload the new photo
       const photoUrl = await uploadPhoto();
-      
+
       // Update the profile data with the new photo URL
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
@@ -524,21 +526,26 @@ function ProfileDetailModal({
         gotra: profile?.gotra,
         nakshatra: profile?.nakshatra,
         rashi: profile?.rashi,
+        paada: profile?.paada,
         gana: profile?.gana,
         nadi: profile?.nadi,
         caste: profile?.caste,
         matha: profile?.matha,
         dob: profile?.dob,
+        tob: profile?.tob,
         placeOfBirth: profile?.placeOfBirth,
         height: profile?.height,
         qualification: profile?.qualification,
         workingOrganization: profile?.workingOrganization,
+        isAbroadWorking: profile?.isAbroadWorking,
         workingLocation: profile?.workingLocation,
         expectationsAboutPartner: profile?.expectationsAboutPartner,
         salary: profile?.salary,
         residence: profile?.residence,
         siblings: profile?.siblings,
         contactNumber: profile?.contactNumber,
+        isDivorced: profile?.isDivorced,
+        divorceDetails: profile?.isDivorced ? profile?.divorceDetails : null,
         description: profile?.description,
       };
 
@@ -546,7 +553,7 @@ function ProfileDetailModal({
         "https://51kxoxxpf4.execute-api.ap-south-1.amazonaws.com/Stage/add-profile",
         apiPayload
       );
-        
+
       console.log("updated photo response", response.data);
       // Display a success message
       Swal.fire({
@@ -571,14 +578,13 @@ function ProfileDetailModal({
     } finally {
       setIsLoading(false);
     }
-  };  
+  };
 
   const handleSaveClick = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-
       const updatedProfile = {
         ...profileDetail,
         id: profile?.id,
@@ -588,21 +594,26 @@ function ProfileDetailModal({
         gotra: formData.gotra,
         nakshatra: formData.nakshatra,
         rashi: formData.rashi,
+        paada: formData.paada,
         gana: formData.gana,
         nadi: formData.nadi,
         caste: formData.caste,
         matha: formData.matha,
         dob: formData.dob,
+        tob: formData.tob,
         placeOfBirth: formData.placeOfBirth,
         height: formData.height,
         qualification: formData.qualification,
         workingOrganization: formData.workingOrganization,
+        isAbroadWorking: formData.isAbroadWorking,
         workingLocation: formData.workingLocation,
         expectationsAboutPartner: formData.expectationsAboutPartner,
         salary: formData.salary,
         residence: formData.residence,
         siblings: formData.siblings,
         contactNumber: formData.contactNumber,
+        isDivorced: formData.isDivorced,
+        divorceDetails: formData.isDivorced ? formData.divorceDetails : null,
         description: formData.description,
         photo: profile?.photo,
       };
@@ -610,7 +621,7 @@ function ProfileDetailModal({
       // Update the profile data in the state
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-expect-error
-    setProfileDetail(updatedProfile);
+      setProfileDetail(updatedProfile);
 
       const response = await axios.post(
         "https://51kxoxxpf4.execute-api.ap-south-1.amazonaws.com/Stage/add-profile",
@@ -741,6 +752,18 @@ function ProfileDetailModal({
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
+                <label htmlFor="paada">Paada:</label>
+                <input
+                  type="text"
+                  name="paada"
+                  value={formData?.paada || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
+              </InputHolder>
+            </FieldsHolder>
+            <FieldsHolder>
+              <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="gana">Gana:</label>
                 <input
                   type="text"
@@ -751,7 +774,7 @@ function ProfileDetailModal({
                 />
               </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="nadi">Nadi.:</label>
+                <label htmlFor="nadi">Nadi:</label>
                 <input
                   type="text"
                   name="nadi"
@@ -785,7 +808,7 @@ function ProfileDetailModal({
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="dob">Date & Time of Birth:</label>
+                <label htmlFor="dob">Date of Birth:</label>
                 <input
                   type="text"
                   name="dob"
@@ -794,6 +817,18 @@ function ProfileDetailModal({
                   autoComplete="off"
                 />
               </InputHolder>
+              <InputHolder className="input-holder mb-2 col-lg-5">
+                <label htmlFor="tob">Time of Birth:</label>
+                <input
+                  type="text"
+                  name="tob"
+                  value={formData?.tob || ""}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
+              </InputHolder>
+            </FieldsHolder>
+            <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="placeOfBirth">Place of Birth:</label>
                 <input
@@ -840,6 +875,26 @@ function ProfileDetailModal({
                   autoComplete="off"
                 />
               </InputHolder>
+            </FieldsHolder>
+            <FieldsHolder>
+              <InputHolder className="input-holder mb-2 col-lg-5">
+                <label htmlFor="workingLocation">Working in Abroad:</label>
+                <select
+                  style={{ width: "130px" }}
+                  name="isAbroadWorking"
+                  value={formData.isAbroadWorking ? "yes" : "no"}
+                  id="isAbroadWorking"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      isAbroadWorking: e.target.value === "yes",
+                    })
+                  }
+                >
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </InputHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
                 <label htmlFor="workingLocation">Place of Working:</label>
                 <input
@@ -875,7 +930,7 @@ function ProfileDetailModal({
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
-                <label htmlFor="contactNumber">Contact No.:</label>
+                <label htmlFor="contactNumber">Contact No:</label>
                 <input
                   type="text"
                   name="contactNumber"
@@ -884,6 +939,42 @@ function ProfileDetailModal({
                   autoComplete="off"
                 />
               </InputHolder>
+            </FieldsHolder>
+            <FieldsHolder>
+              <InputHolder className="input-holder mb-2 col-lg-5">
+                <label htmlFor="contactNumber"> Divorce/Widow?:</label>
+                <select
+                  style={{ width: "130px" }}
+                  name="isDivorced"
+                  value={formData.isDivorced ? "yes" : "no"}
+                  id="isDivorced"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      isDivorced: e.target.value === "yes",
+                    })
+                  }
+                >
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </InputHolder>
+              {formData.isDivorced && (
+                <InputHolder className="input-holder mb-2 col-lg-5">
+                  <label htmlFor="contactNumber">
+                    {" "}
+                    Divorced/Widow Details:
+                  </label>
+                  <input
+                    type="text"
+                    name="divorceDetails"
+                    value={formData.divorceDetails}
+                    id="divorceDetails"
+                    autoComplete="off"
+                    onChange={handleChange}
+                  />
+                </InputHolder>
+              )}
             </FieldsHolder>
             <FieldsHolder>
               <InputHolder className="input-holder mb-2 col-lg-5">
@@ -931,8 +1022,10 @@ function ProfileDetailModal({
                   alt={profileDetail?.name}
                 />
               )}
-              <UpdateProfile>Update Photo</UpdateProfile>
+              <UpdateProfilePhoto>
+                Update Photo
               <input
+                style={{ marginLeft: "35px" }}
                 type="file"
                 accept="image/*"
                 ref={fileRef}
@@ -940,7 +1033,12 @@ function ProfileDetailModal({
                 autoComplete="off"
                 onChange={handleFileChange}
               />
-              {fileRef.current && <SaveButton onClick={updatePhotoSubmit}>Update {isLoading && <LoaderComponent />}</SaveButton>}
+              {fileRef.current && (
+                <SaveButton onClick={updatePhotoSubmit}>
+                  Update {isLoading && <LoaderComponent />}
+                </SaveButton>
+              )}
+              </UpdateProfilePhoto>
             </ViewUserPhoto>
             <ViewUserDetails>
               {profileDetail?.name && (
@@ -1014,13 +1112,13 @@ function ProfileDetailModal({
                   <strong>Date of Birth: </strong>
                   {profileDetail?.dob}
                 </DetailsSpan>
-              )}              
+              )}
               {profileDetail?.tob && (
                 <DetailsSpan>
                   <strong>Time of Birth: </strong>
                   {profileDetail?.tob}
                 </DetailsSpan>
-              )}              
+              )}
               {profileDetail?.placeOfBirth && (
                 <DetailsSpan>
                   <strong>Place of Birth: </strong>
@@ -1038,7 +1136,7 @@ function ProfileDetailModal({
                   <strong>Qualification: </strong>
                   {profileDetail?.qualification}
                 </DetailsSpan>
-              )}              
+              )}
               {profileDetail?.workingOrganization && (
                 <DetailsSpan>
                   <strong>Working Organisation: </strong>
