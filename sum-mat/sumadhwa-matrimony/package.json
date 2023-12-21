@@ -19,6 +19,7 @@
     "bootstrap-icons": "^1.11.2",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.1",
+    "react-datepicker": "^4.25.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.1",
     "styled-components": "^6.1.1",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
+    "@types/react-datepicker": "^4.19.4",
     "@types/react-dom": "^18.2.15",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",

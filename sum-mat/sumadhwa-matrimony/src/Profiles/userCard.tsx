@@ -148,7 +148,8 @@ export interface Profile {
   caste: string;
   matha: string;
   dob: string;
-  age: string;
+  tob: string;
+  paada: string;
   placeOfBirth: string;
   height: string;
   qualification: string;
@@ -194,11 +195,13 @@ const UserCard: React.FC<{ profile: Profile }> = ({ profile }) => {
     "gotra",
     "nakshatra",
     "rashi",
+    "paada",
     "gana",
     "nadi",
     "caste",
     "matha",
     "dob",
+    "tob",
     "placeOfBirth",
     "height",
     "qualification",
@@ -220,12 +223,13 @@ const UserCard: React.FC<{ profile: Profile }> = ({ profile }) => {
       gotra: "Gotra",
       nakshatra: "Nakshatra",
       rashi: "Rashi",
+      paada: "Paada",
       gana: "Gana",
       nadi: "Nadi",
       caste: "Caste",
       matha: "Mata(ಮಠ)",
       dob: "Date of Birth & Time",
-      age: "Age",
+      tob: "Time of Birth",
       placeOfBirth: "Place of Birth",
       height: "Height",
       qualification: "Qualification",

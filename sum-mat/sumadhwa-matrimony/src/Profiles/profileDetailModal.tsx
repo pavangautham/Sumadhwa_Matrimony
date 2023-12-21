@@ -403,12 +403,13 @@ function ProfileDetailModal({
     gotra: "",
     nakshatra: "",
     rashi: "",
+    paada: "",
     gana: "",
     nadi: "",
     caste: "",
     matha: "",
     dob: "",
-    age: "",
+    tob: "",
     placeOfBirth: "",
     height: "",
     qualification: "",
@@ -978,6 +979,12 @@ function ProfileDetailModal({
                   {profileDetail?.rashi}
                 </DetailsSpan>
               )}
+              {profileDetail?.paada && (
+                <DetailsSpan>
+                  <strong>Paada: </strong>
+                  {profileDetail?.paada}
+                </DetailsSpan>
+              )}
               {profileDetail?.gana && (
                 <DetailsSpan>
                   <strong>Gana: </strong>
@@ -1004,16 +1011,16 @@ function ProfileDetailModal({
               )}
               {profileDetail?.dob && (
                 <DetailsSpan>
-                  <strong>Date & Time of Birth: </strong>
+                  <strong>Date of Birth: </strong>
                   {profileDetail?.dob}
                 </DetailsSpan>
-              )}
-              {profileDetail?.age && (
+              )}              
+              {profileDetail?.tob && (
                 <DetailsSpan>
-                  <strong>Age: </strong>
-                  {profileDetail?.age}
+                  <strong>Time of Birth: </strong>
+                  {profileDetail?.tob}
                 </DetailsSpan>
-              )}
+              )}              
               {profileDetail?.placeOfBirth && (
                 <DetailsSpan>
                   <strong>Place of Birth: </strong>

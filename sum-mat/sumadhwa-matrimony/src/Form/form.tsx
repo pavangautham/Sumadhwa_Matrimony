@@ -6,6 +6,9 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import LoaderComponent from "../Components/loader";
 import Swal from "sweetalert2";
+import "react-datepicker/dist/react-datepicker.css";
+import CustomDatePicker from "./customDatePicker";
+import DatePicker from "react-datepicker";
 
 export interface IFormData {
   name: string;
@@ -15,12 +18,13 @@ export interface IFormData {
   gotra: string;
   nakshatra: string;
   rashi: string;
+  paada: string;
   gana: string;
   nadi: string;
   caste: string;
   matha: string;
   dob: string;
-  age: string;
+  tob: string;
   placeOfBirth: string;
   height: string;
   qualification: string;
@@ -52,11 +56,12 @@ function Form() {
     gotra: "",
     nakshatra: "",
     rashi: "",
+    paada: "",
     gana: "",
     nadi: "",
     caste: "",
     dob: "",
-    age: "",
+    tob: "",
     matha: "",
     placeOfBirth: "",
     height: "",
@@ -74,7 +79,6 @@ function Form() {
     residence: "",
     photo: null,
   });
-  console.log("formData", formData);
 
   const [error, setError] = useState<ErrorData>({
     name: false,
@@ -84,6 +88,38 @@ function Form() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [timeOfBirth, setTimeOfBirth] = useState<Date | null>(new Date());
+
+  const handleDateChange = (date: Date | null) => {
+    // Update the date in the formData
+  const formattedDate = date
+  ? `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
+  : "";
+
+    setFormData((prevData) => ({
+    ...prevData,
+    dob: formattedDate,
+  }));
+  };
+
+  const handleTimeOfBirthChange = (time: Date | null) => {
+    // Update the time of birth in the formData
+    const formattedTime = time
+      ? new Intl.DateTimeFormat('en-US', {
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true,
+        }).format(time)
+      : '';
+  
+    setFormData((prevData) => ({
+      ...prevData,
+      tob: formattedTime,
+    }));
+  
+    // Update the state for the selected time
+    setTimeOfBirth(time);
+  };
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -160,8 +196,8 @@ function Form() {
   };
 
   const BOT_TOKEN = "6710721716:AAFJCkuFl94excqHHHcz7q2aKr2a85rUDqs";
-  // const CHAT_ID = 822389037;
-  const CHAT_ID = -1002136474672;
+  const CHAT_ID = 822389037;
+  // const CHAT_ID = -1002136474672;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -192,10 +228,11 @@ function Form() {
         rashi: formData.rashi,
         gana: formData.gana,
         nadi: formData.nadi,
+        paada: formData.paada,
         caste: formData.caste,
         matha: formData.matha,
         dob: formData.dob,
-        age: formData.age,
+        tob: formData.tob,
         placeOfBirth: formData.placeOfBirth,
         height: formData.height,
         qualification: formData.qualification,
@@ -231,10 +268,11 @@ function Form() {
         rashi: "Rashi",
         gana: "Gana",
         nadi: "Nadi",
+        paada: "Paada",
         caste: "Caste",
         matha: "Mata(ಮಠ)",
-        dob: "Date of Birth & Time",
-        age: "Age",
+        dob: "Date of Birth",
+        tob: "Time of Birth",
         placeOfBirth: "Place of Birth",
         height: "Height",
         qualification: "Qualification",
@@ -350,12 +388,13 @@ function Form() {
         gotra: "",
         nakshatra: "",
         rashi: "",
+        paada: "",
         gana: "",
         nadi: "",
         caste: "",
         matha: "",
         dob: "",
-        age: "",
+        tob: "",
         placeOfBirth: "",
         height: "",
         qualification: "",
@@ -522,6 +561,21 @@ function Form() {
         </div>
         <div className="two col-lg-12 col-11">
           <div className="input-holder col-lg-6">
+            <label id="paada-label" htmlFor="paada">
+              Paada
+            </label>
+            <input
+              type="text"
+              name="paada"
+              value={formData.paada}
+              id="age"
+              autoComplete="off"
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        <div className="two col-lg-12 col-11">
+          <div className="input-holder col-lg-6">
             <label id="gana-label" htmlFor="gana">
               Gana
             </label>
@@ -579,17 +633,26 @@ function Form() {
         <div className="two col-lg-12 col-11">
           <div className="input-holder col-lg-6">
             <label id="dob-label" htmlFor="dob">
-              Date & Time of Birth
+              Date of Birth
             </label>
-            <input
-              type="text"
-              name="dob"
-              value={formData.dob}
-              id="dob"
-              autoComplete="off"
-              onChange={handleChange}
+            <CustomDatePicker onDateChange={handleDateChange} />
+          </div>
+          <div className="input-holder col-lg-6">
+            <label id="dob-label" htmlFor="dob">
+              Time of Birth
+            </label>
+            <DatePicker
+              selected={timeOfBirth}
+              onChange={handleTimeOfBirthChange}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={15}
+              timeCaption="Time"
+              dateFormat="h:mm aa"
             />
           </div>
+        </div>
+        <div className="two col-lg-12 col-11">
           <div className="input-holder col-lg-6">
             <label id="placeOfBirth-label" htmlFor="placeOfBirth">
               Place of Birth
@@ -599,21 +662,6 @@ function Form() {
               name="placeOfBirth"
               value={formData.placeOfBirth}
               id="placeOfBirth"
-              autoComplete="off"
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <div className="two col-lg-12 col-11">
-          <div className="input-holder col-lg-6">
-            <label id="age-label" htmlFor="age">
-              Age
-            </label>
-            <input
-              type="text"
-              name="age"
-              value={formData.age}
-              id="age"
               autoComplete="off"
               onChange={handleChange}
             />

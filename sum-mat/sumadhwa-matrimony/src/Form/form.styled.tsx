@@ -239,4 +239,29 @@ export const StyledForm = styled.form`
       color: white;
     }
   }
+
+  .react-datepicker-wrapper {
+    position: relative;
+    z-index: 9999; /* Adjust as needed */
+  }
+
+  .react-datepicker__input-container {
+    display: block;
+    width: 100%;
+  }
+
+  .react-datepicker__day--selected {
+    background-color: #fff;
+    color: #fff;
+  }
+
+  .react-datepicker__time-container{
+    width: 100%;
+  }
+  .react-datepicker--time-only{
+    width: 200px;
+  }
+  .react-datepicker-popper {
+    z-index: 99999;
+  }
 `;
