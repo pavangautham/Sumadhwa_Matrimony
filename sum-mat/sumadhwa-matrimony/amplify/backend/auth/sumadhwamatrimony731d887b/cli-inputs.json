@@ -1,10 +1,10 @@
 {
   "version": "1",
   "cognitoConfig": {
-    "identityPoolName": "sumadhwamatrimony244e624f_identitypool_244e624f",
-    "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "sumadh244e624f",
-    "userPoolName": "sumadhwamatrimony244e624f_userpool_244e624f",
+    "identityPoolName": "sumadhwamatrimony731d887b_identitypool_731d887b",
+    "allowUnauthenticatedIdentities": false,
+    "resourceNameTruncated": "sumadh731d887b",
+    "userPoolName": "sumadhwamatrimony731d887b_userpool_731d887b",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -31,29 +31,15 @@
     "userpoolClientReadAttributes": [
       "email"
     ],
-    "userpoolClientLambdaRole": "sumadh244e624f_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "sumadh731d887b_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "244e624f",
-    "resourceName": "sumadhwamatrimony244e624f",
+    "sharedId": "731d887b",
+    "resourceName": "sumadhwamatrimony731d887b",
     "authSelections": "identityPoolAndUserPool",
     "useDefault": "default",
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
-    "useEnabledMfas": true,
-    "authRoleArn": {
-      "Fn::GetAtt": [
-        "AuthRole",
-        "Arn"
-      ]
-    },
-    "unauthRoleArn": {
-      "Fn::GetAtt": [
-        "UnauthRole",
-        "Arn"
-      ]
-    },
-    "breakCircularDependency": true,
-    "dependsOn": []
+    "useEnabledMfas": true
   }
 }

@@ -1,36 +1,61 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-sumadhwamatrimony-dev-145715-authRole",
-      "UnauthRoleArn": "arn:aws:iam::310688881505:role/amplify-sumadhwamatrimony-dev-145715-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::310688881505:role/amplify-sumadhwamatrimony-dev-145715-authRole",
+      "AuthRoleName": "amplify-sumadhwamatrimony-dev-01331-authRole",
+      "UnauthRoleArn": "arn:aws:iam::310688881505:role/amplify-sumadhwamatrimony-dev-01331-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::310688881505:role/amplify-sumadhwamatrimony-dev-01331-authRole",
       "Region": "ap-south-1",
-      "DeploymentBucketName": "amplify-sumadhwamatrimony-dev-145715-deployment",
-      "UnauthRoleName": "amplify-sumadhwamatrimony-dev-145715-unauthRole",
-      "StackName": "amplify-sumadhwamatrimony-dev-145715",
-      "StackId": "arn:aws:cloudformation:ap-south-1:310688881505:stack/amplify-sumadhwamatrimony-dev-145715/4f7aabb0-973e-11ee-9a9d-0a582594a3ea",
-      "AmplifyAppId": "dy906ucimp0ye"
+      "DeploymentBucketName": "amplify-sumadhwamatrimony-dev-01331-deployment",
+      "UnauthRoleName": "amplify-sumadhwamatrimony-dev-01331-unauthRole",
+      "StackName": "amplify-sumadhwamatrimony-dev-01331",
+      "StackId": "arn:aws:cloudformation:ap-south-1:310688881505:stack/amplify-sumadhwamatrimony-dev-01331/d7f3af50-a030-11ee-a176-0215b779b49c",
+      "AmplifyAppId": "d4ogjrz477w3n"
     },
     "categories": {
       "hosting": {
         "amplifyhosting": {
-          "appId": "dy906ucimp0ye",
+          "appId": "d4ogjrz477w3n",
+          "type": "manual"
+        }
+      },
+      "auth": {
+        "sumadhwamatrimony731d887b": {}
+      },
+      "storage": {
+        "sumadhwamatrimony1683d99d": {
+          "bucketName": "sumadhwa-dev-doc-bucket",
+          "region": "ap-south-1"
+        },
+        "sumadhwamatrimonyff52f8d2": {}
+      }
+    }
+  },
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-sumadhwamatrimony-prod-01739-authRole",
+      "UnauthRoleArn": "arn:aws:iam::310688881505:role/amplify-sumadhwamatrimony-prod-01739-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::310688881505:role/amplify-sumadhwamatrimony-prod-01739-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-sumadhwamatrimony-prod-01739-deployment",
+      "UnauthRoleName": "amplify-sumadhwamatrimony-prod-01739-unauthRole",
+      "StackName": "amplify-sumadhwamatrimony-prod-01739",
+      "StackId": "arn:aws:cloudformation:ap-south-1:310688881505:stack/amplify-sumadhwamatrimony-prod-01739/6b2dcf30-a031-11ee-8f7d-0a1a40b446bc",
+      "AmplifyAppId": "d4ogjrz477w3n"
+    },
+    "categories": {
+      "auth": {
+        "sumadhwamatrimony731d887b": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d4ogjrz477w3n",
           "type": "manual"
         }
       },
       "storage": {
-        "sumadhwamatrimony59261716": {
-          "bucketName": "sumadhwa-matrimony-doc-bucket",
+        "sumadhwamatrimony1683d99d": {
+          "bucketName": "sumadhwa-prod-doc-bucket",
           "region": "ap-south-1"
-        }
-      },
-      "auth": {
-        "sumadhwamatrimony244e624f": {}
-      },
-      "function": {
-        "S3Triggeraeb307fd": {
-          "deploymentBucketName": "amplify-sumadhwamatrimony-dev-145715-deployment",
-          "s3Key": "amplify-builds/S3Triggeraeb307fd-6b346f744541436b3078-build.zip"
         }
       }
     }

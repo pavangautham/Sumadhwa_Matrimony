@@ -1,6 +1,6 @@
 {
   "auth": {
-    "sumadhwamatrimony244e624f": {
+    "sumadhwamatrimony731d887b": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
@@ -25,13 +25,6 @@
       "service": "Cognito"
     }
   },
-  "function": {
-    "S3Triggeraeb307fd": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    }
-  },
   "hosting": {
     "amplifyhosting": {
       "providerPlugin": "awscloudformation",
@@ -40,22 +33,6 @@
     }
   },
   "parameters": {
-    "AMPLIFY_function_S3Triggeraeb307fd_deploymentBucketName": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "S3Triggeraeb307fd"
-        }
-      ]
-    },
-    "AMPLIFY_function_S3Triggeraeb307fd_s3Key": {
-      "usedBy": [
-        {
-          "category": "function",
-          "resourceName": "S3Triggeraeb307fd"
-        }
-      ]
-    },
     "AMPLIFY_hosting_amplifyhosting_appId": {
       "usedBy": [
         {
@@ -72,25 +49,25 @@
         }
       ]
     },
-    "AMPLIFY_storage_sumadhwamatrimony59261716_bucketName": {
+    "AMPLIFY_storage_sumadhwamatrimony1683d99d_bucketName": {
       "usedBy": [
         {
           "category": "storage",
-          "resourceName": "sumadhwamatrimony59261716"
+          "resourceName": "sumadhwamatrimony1683d99d"
         }
       ]
     },
-    "AMPLIFY_storage_sumadhwamatrimony59261716_region": {
+    "AMPLIFY_storage_sumadhwamatrimony1683d99d_region": {
       "usedBy": [
         {
           "category": "storage",
-          "resourceName": "sumadhwamatrimony59261716"
+          "resourceName": "sumadhwamatrimony1683d99d"
         }
       ]
     }
   },
   "storage": {
-    "sumadhwamatrimony59261716": {
+    "sumadhwamatrimony1683d99d": {
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
       "service": "S3",
